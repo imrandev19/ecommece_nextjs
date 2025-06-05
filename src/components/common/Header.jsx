@@ -102,9 +102,9 @@ const Header = () => {
           </div>
         </Container>
       </div>
-      <div className="header_menu">
+      <div className="header_menu relative after:content-[''] after:w-full after:h-1 after:[#E4E7E9] after:absolute">
         <Container>
-          <div className="py-4 flex items-center justify-between">
+          <div className="py-4 flex items-center justify-between  ">
             <ul className=" flex text-sm font-normal leading-5">
               <li className="gap-2 py-[14px] px-6 flex items-center  text-[#5F6C72] cursor-pointer  hover:bg-[#F2F4F5] hover:text-[#191C1F]">
                 All Category <IoIosArrowDown />
@@ -135,6 +135,7 @@ const Header = () => {
             </p>
           </div>
         </Container>
+        <hr className="bg-[#E4E7E9]"/>
       </div>
     </header>
   );
