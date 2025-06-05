@@ -53,7 +53,7 @@ const Header = () => {
 
       {/* Header Welcome Part & Search Part Start */}
       <div className="header_blue bg-[#1B6392] ">
-        <div className="header_welcome py-4 ">
+        <div className="header_welcome py-4 relative after:content-[''] after:w-full after:h-[.1px] after:bg-[#E4E7E9] after:absolute after:mt-4 ">
           <Container>
             <div className="flex items-center justify-between">
               <h3 className="text-[#FFFFFF] text-sm leading-5 font-normal">
@@ -72,7 +72,7 @@ const Header = () => {
             </div>
           </Container>
         </div>
-        <hr />
+        
         <Container>
           <div className="flex items-center justify-between py-5">
             <Image
@@ -102,7 +102,7 @@ const Header = () => {
           </div>
         </Container>
       </div>
-      <div className="header_menu relative after:content-[''] after:w-full after:h-1 after:[#E4E7E9] after:absolute">
+      <div className="header_menu relative after:content-[''] after:w-full after:h-[.1px] after:bg-[#E4E7E9] after:absolute">
         <Container>
           <div className="py-4 flex items-center justify-between  ">
             <ul className=" flex text-sm font-normal leading-5">
@@ -135,7 +135,7 @@ const Header = () => {
             </p>
           </div>
         </Container>
-        <hr className="bg-[#E4E7E9]"/>
+        
       </div>
     </header>
   );
