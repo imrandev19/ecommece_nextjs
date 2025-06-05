@@ -15,7 +15,12 @@ import { CiSearch } from "react-icons/ci";
 import { CiShoppingCart } from "react-icons/ci";
 import { GrFavorite } from "react-icons/gr";
 import { LuUserRound } from "react-icons/lu";
-
+import { IoIosArrowDown } from "react-icons/io";
+import { CiLocationOn } from "react-icons/ci";
+import { FaArrowsRotate } from "react-icons/fa6";
+import { AiOutlineCustomerService } from "react-icons/ai";
+import { PiInfo } from "react-icons/pi";
+import { LuPhoneCall } from "react-icons/lu";
 const Header = () => {
   return (
     <header>
@@ -87,15 +92,49 @@ const Header = () => {
             <div className="gap-6 flex items-center">
               <div className="relative ">
                 <CiShoppingCart className="w-8 h-8 text-white" />
-                <span className="absolute font-semibold text-[12px] leading-4 text-[#1B6392] bg-white rounded-full py-1 px-2 top-[-4px] left-[16px]">2</span>
+                <span className="absolute font-semibold text-[12px] leading-4 text-[#1B6392] bg-white rounded-full py-1 px-2 top-[-4px] left-[16px]">
+                  2
+                </span>
               </div>
               <GrFavorite className="w-8 h-8 text-white" />
               <LuUserRound className="w-8 h-8 text-white" />
             </div>
           </div>
         </Container>
+      </div>
+      <div className="header_menu">
+        <Container>
+          <div className="py-4 flex items-center justify-between">
+            <ul className=" flex text-sm font-normal leading-5">
+              <li className="gap-2 py-[14px] px-6 flex items-center  text-[#5F6C72] cursor-pointer  hover:bg-[#F2F4F5] hover:text-[#191C1F]">
+                All Category <IoIosArrowDown />
+              </li>
+              <li className="flex items-center py-[14px] px-6 gap-[6px]  text-[#5F6C72] cursor-pointer  hover:bg-[#F2F4F5] hover:text-[#191C1F]">
+                <CiLocationOn className="w-6 h-4" />
+                Track Order
+              </li>
+              <li className="flex items-center py-[14px] px-6 gap-[6px]  text-[#5F6C72] cursor-pointer  hover:bg-[#F2F4F5] hover:text-[#191C1F]">
+                <FaArrowsRotate className="w-6 h-4" />
+                Compare
+              </li>
+              <li className="flex items-center py-[14px] px-6 gap-[6px]  text-[#5F6C72] cursor-pointer  hover:bg-[#F2F4F5] hover:text-[#191C1F]">
+                <AiOutlineCustomerService className="w-6 h-4" />
+                Customer Support
+              </li>
+              <li className="flex items-center py-[14px] px-6 gap-[6px]  text-[#5F6C72] cursor-pointer  hover:bg-[#F2F4F5] hover:text-[#191C1F]">
+                <PiInfo className="w-6 h-4" />
+                Need Help
+              </li>
+            </ul>
 
-        
+            <p className="flex gap-2 items-center text-[#191C1F]">
+              <LuPhoneCall />
+              <span className="font-public_sans font-normal text-[18px] leading-6">
+                +1-202-555-0104
+              </span>
+            </p>
+          </div>
+        </Container>
       </div>
     </header>
   );
