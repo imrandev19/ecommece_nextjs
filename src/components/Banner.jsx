@@ -97,7 +97,18 @@ const Banner = () => {
           </Carousel>
         </div>
         <div className="h-[520px] w-[424px] bg-red-500">
-          <div></div>
+          <div className="h-[248px] w-full pl-10 bg-[#191C1F] flex items-end rounded-[6px] relative">
+            <div className="px-4 py-2 font-semibold uppercase leading-6 text-[16px] bg-[#EFD33D] rounded-[2px] absolute top-6 right-6">29% OFF</div>            <div className="pb-[48px]">
+              <h3 className="uppercase text-[#EBC80C] leading-5 text-sm font-medium">Summer Sales</h3>
+            <h2 className="font-semibold leading-8 text-2xl text-[#FFFFFF] w-[160px] mt-[5px] mb-[18px]">New Google Pixel 6 Pro</h2>
+            <Button className="text-[#FFFFFF] font-bold text-[16px] cursor-pointer leading-[48px]  tracking-wide bg-[#FA8232] hover:bg-[#FA8232]/90 w-[156px] ">
+                        SHOP NOW <FaArrowRightLong />
+                      </Button>
+            </div>
+            <div>
+              <Image src= "/images/gphone.png" width={312} height={312} alt="banner right 1st image"/>
+            </div>
+          </div>
         <div></div>
         </div>
        </div>
