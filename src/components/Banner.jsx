@@ -36,7 +36,7 @@ const Banner = () => {
                         Save up to 50% on select Xbox games. Get 3 months of PC
                         Game Pass for $2 USD.
                       </p>
-                      <Button className="text-[#FFFFFF] font-bold text-[16px] cursor-pointer leading-[56px] h-full tracking-wide bg-[#FA8232] hover:bg-[#FA8232]/90 w-[191px] ">
+                      <Button className="text-[#FFFFFF] font-bold text-[16px] cursor-pointer leading-[56px] h-[56px] tracking-wide bg-[#FA8232] hover:bg-[#FA8232]/90 w-[191px] ">
                         SHOP NOW <FaArrowRightLong />
                       </Button>
                       <div className="absolute bottom-0 left-[56px]">
@@ -96,12 +96,12 @@ const Banner = () => {
             </CarouselContent>
           </Carousel>
         </div>
-        <div className="h-[520px] w-[424px] bg-red-500">
+        <div className="h-[520px] w-[424px]  flex flex-col gap-6">
           <div className="h-[248px] w-full pl-10 bg-[#191C1F] flex items-end rounded-[6px] relative">
             <div className="px-4 py-2 font-semibold uppercase leading-6 text-[16px] bg-[#EFD33D] rounded-[2px] absolute top-6 right-6">29% OFF</div>            <div className="pb-[48px]">
               <h3 className="uppercase text-[#EBC80C] leading-5 text-sm font-medium">Summer Sales</h3>
             <h2 className="font-semibold leading-8 text-2xl text-[#FFFFFF] w-[160px] mt-[5px] mb-[18px]">New Google Pixel 6 Pro</h2>
-            <Button className="text-[#FFFFFF] font-bold text-[16px] cursor-pointer leading-[48px]  tracking-wide bg-[#FA8232] hover:bg-[#FA8232]/90 w-[156px] ">
+            <Button className="text-[#FFFFFF] font-bold text-[16px] cursor-pointer leading-[48px] h-[48px]   tracking-wide bg-[#FA8232] hover:bg-[#FA8232]/90 w-[156px] ">
                         SHOP NOW <FaArrowRightLong />
                       </Button>
             </div>
@@ -109,7 +109,23 @@ const Banner = () => {
               <Image src= "/images/gphone.png" width={312} height={312} alt="banner right 1st image"/>
             </div>
           </div>
-        <div></div>
+        <div>
+          
+          <div className="h-[248px] w-full pl-8 bg-[#F2F4F5] flex items-center rounded-[6px] gap-5">
+             <div>
+              <Image src= "/images/buds.png" width={160} height={160} alt="banner right 2nd image"/>
+            </div>
+                      
+             <div className="w-[172px]">
+              <h3 className=" text-[#191C1F] leading-8 text-2xl font-semibold">Xiaomi FlipBuds Pro</h3>
+            <h2 className="font-semibold leading-6 text-[18px] text-[#2DA5F3] w-[160px] mt-3 mb-5">$299 USD</h2>
+            <Button className="text-[#FFFFFF] font-bold text-[16px] cursor-pointer leading-[48px] h-[48px]  tracking-wide bg-[#FA8232] hover:bg-[#FA8232]/90 w-[156px] ">
+                        SHOP NOW <FaArrowRightLong />
+                      </Button>
+            </div>
+           
+          </div>
+        </div>
         </div>
        </div>
       </Container>
