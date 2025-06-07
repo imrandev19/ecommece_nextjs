@@ -3,9 +3,10 @@ import Container from "./common/Container";
 import { Button } from "@/components/ui/button";
 import { FaArrowRightLong } from "react-icons/fa6";
 import Image from "next/image";
+import { GrFavorite } from "react-icons/gr";
 const FeaturedProduct = () => {
   return (
-    <div className="mt-[72px]">
+    <div className="my-[72px]">
       <Container>
         <div className="flex items-center justify-between">
           <div className="w-[312px] h-[716px] bg-[#F3DE6D] flex flex-col items-center ">
@@ -47,9 +48,20 @@ const FeaturedProduct = () => {
               </ul>
             </div>
             <div>
-                <div className="grid grid-cols-4 gap-4 relative">
-                    <div className="w-[234px] h-[320px] p-4 border-1 border-[#E4E7E9]">
+                <div className="grid grid-cols-4 gap-4 ">
+                    <div className="w-[234px] h-[320px] p-4 border-1 border-[#E4E7E9] relative">
                         <span className="text-[#FFFFFF] text-[12px] leding-4 font-semibold w-[46px] h-[26px] bg-[#EE5858] rounded-[2px] absolute top-[12px] left-[12px] flex items-center justify-center">HOT</span>
+                        <div className="flex gap-2 absolute top-2/4 translate-[-50%] left-2/4">
+                            <div className=" z-100 p-3 bg-white rounded-full">
+                            <GrFavorite className="w-[24px] h-[24px] text-[#191C1F]" /> 
+                        </div>
+                        <div className="z-100 p-3 bg-white rounded-full">
+                            <GrFavorite className="w-[24px] h-[24px] text-[#191C1F]" /> 
+                        </div>
+                        <div className="z-100 p-3 bg-white rounded-full">
+                            <GrFavorite className="w-[24px] h-[24px] text-[#191C1F]" /> 
+                        </div>
+                        </div>
                     <Image src="/images/A71.png" alt="A71 phone" width={202} height={172} className="mb-6"/>
                     <div className="flex gap-1 items-start">
                         <Image src="/images/Star5.png" alt="Star" width={80} height={16} className="mb-2"/>
@@ -89,8 +101,9 @@ const FeaturedProduct = () => {
                     <h3 className="my-2 font-normal text-sm leading-5 text-[#191C1F] w-[202px]">Portable Wshing Machine, 11lbs capacity Model 18NMF...</h3>
                     <p className="font-bold text-sm text-[#2DA5F3] leading-5">$80</p>
                 </div>
+                
                 <div className="w-[234px] h-[320px] p-4 border-1 border-[#E4E7E9]">
-                    <Image src="/images/HeadphoneR.png" alt="A71 phone" width={202} height={172} className="mb-6"/>
+                    <Image src="/images/Dell.png" alt="Drone" width={202} height={172} className="mb-6"/>
                     <div className="flex gap-1 items-start">
                         <Image src="/images/Star4.png" alt="Star" width={80} height={16} className="mb-2"/>
                         <p className="text-[12px] font-normal leading-4 text-[#77878F]">(816)</p>
@@ -100,7 +113,7 @@ const FeaturedProduct = () => {
                     <p className="font-bold text-sm text-[#2DA5F3] leading-5">$80</p>
                 </div>
                 <div className="w-[234px] h-[320px] p-4 border-1 border-[#E4E7E9]">
-                    <Image src="/images/HeadphoneR.png" alt="A71 phone" width={202} height={172} className="mb-6"/>
+                    <Image src="/images/HeadphoneR.png" alt="tv image" width={202} height={172} className="mb-6"/>
                     <div className="flex gap-1 items-start">
                         <Image src="/images/Star4.png" alt="Star" width={80} height={16} className="mb-2"/>
                         <p className="text-[12px] font-normal leading-4 text-[#77878F]">(816)</p>
@@ -110,7 +123,7 @@ const FeaturedProduct = () => {
                     <p className="font-bold text-sm text-[#2DA5F3] leading-5">$80</p>
                 </div>
                 <div className="w-[234px] h-[320px] p-4 border-1 border-[#E4E7E9]">
-                    <Image src="/images/HeadphoneR.png" alt="A71 phone" width={202} height={172} className="mb-6"/>
+                    <Image src="/images/Dell.png" alt="dell laptop" width={202} height={172} className="mb-6"/>
                     <div className="flex gap-1 items-start">
                         <Image src="/images/Star4.png" alt="Star" width={80} height={16} className="mb-2"/>
                         <p className="text-[12px] font-normal leading-4 text-[#77878F]">(816)</p>
@@ -120,7 +133,7 @@ const FeaturedProduct = () => {
                     <p className="font-bold text-sm text-[#2DA5F3] leading-5">$80</p>
                 </div>
                 <div className="w-[234px] h-[320px] p-4 border-1 border-[#E4E7E9]">
-                    <Image src="/images/HeadphoneR.png" alt="A71 phone" width={202} height={172} className="mb-6"/>
+                    <Image src="/images/HeadphoneR.png" alt="sony phone" width={202} height={172} className="mb-6"/>
                     <div className="flex gap-1 items-start">
                         <Image src="/images/Star4.png" alt="Star" width={80} height={16} className="mb-2"/>
                         <p className="text-[12px] font-normal leading-4 text-[#77878F]">(816)</p>
