@@ -1,5 +1,6 @@
 import Banner from '@/components/Banner'
 import Header from '@/components/common/Header'
+import Features from '@/components/Features'
 import React from 'react'
 
 const page = () => {
@@ -7,6 +8,7 @@ const page = () => {
     <>
     <Header/>
     <Banner/>
+    <Features/>
     </>
   )
 }
