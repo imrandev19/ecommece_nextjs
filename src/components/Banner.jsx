@@ -18,10 +18,34 @@ import {
 } from "@/components/ui/pagination";
 const Banner = () => {
   return (
-    <div>
+    <div className="pt-6">
       <Container>
         <div className="flex items-center gap-6">
-          <div className="w-[872px] h-[520px] bg-[#F2F4F5] py-[56px]">
+          <div className="w-[872px] h-[520px] bg-[#F2F4F5] py-[56px] relative">
+            <div className="absolute bottom-[56px] left-[56px]">
+                          <Pagination>
+                            <PaginationContent>
+                              <PaginationItem className="w-[10px] h-[10px] rounded-full bg-[#ADB7BC] hover:bg-[#191C1F] cursor-pointer active:bg-black">
+                                <PaginationLink
+                                  
+                                  href="#1"
+                                ></PaginationLink>
+                              </PaginationItem>
+                              <PaginationItem className="w-[10px] h-[10px] rounded-full bg-[#ADB7BC] hover:bg-[#191C1F] cursor-pointer active:bg-black">
+                                <PaginationLink
+                                  
+                                  href="#2"
+                                ></PaginationLink>
+                              </PaginationItem>{" "}
+                              <PaginationItem className="w-[10px] h-[10px] rounded-full bg-[#ADB7BC] hover:bg-[#191C1F] cursor-pointer active:bg-black">
+                                <PaginationLink
+                                  
+                                  href="#3"
+                                ></PaginationLink>
+                              </PaginationItem>
+                            </PaginationContent>
+                          </Pagination>
+                        </div>
             <Carousel plugins={[
         Autoplay({
           delay: 2000,
@@ -46,30 +70,7 @@ const Banner = () => {
                         <Button className="text-[#FFFFFF] font-bold text-[16px] cursor-pointer leading-[56px] h-[56px] tracking-wide bg-[#FA8232] hover:bg-[#FA8232]/90 w-[191px] ">
                           SHOP NOW <FaArrowRightLong />
                         </Button>
-                        <div className="absolute bottom-0 left-[56px]">
-                          <Pagination>
-                            <PaginationContent>
-                              <PaginationItem>
-                                <PaginationLink
-                                  className="w-[10px] h-[10px] rounded-full bg-[#ADB7BC] hover:bg-[#191C1F]"
-                                  href="#"
-                                ></PaginationLink>
-                              </PaginationItem>
-                              <PaginationItem>
-                                <PaginationLink
-                                  className="w-[10px] h-[10px] rounded-full bg-[#ADB7BC]"
-                                  href="#"
-                                ></PaginationLink>
-                              </PaginationItem>{" "}
-                              <PaginationItem>
-                                <PaginationLink
-                                  className="w-[10px] h-[10px] rounded-full bg-[#ADB7BC]"
-                                  href="#"
-                                ></PaginationLink>
-                              </PaginationItem>
-                            </PaginationContent>
-                          </Pagination>
-                        </div>
+                        
                       </div>
                       <Image
                         src="/images/Xbox.png"
@@ -101,7 +102,7 @@ const Banner = () => {
                           SHOP NOW <FaArrowRightLong />
                         </Button>
                         <div className="absolute bottom-0 left-[56px]">
-                          <Pagination>
+                          {/* <Pagination>
                             <PaginationContent>
                               <PaginationItem>
                                 <PaginationLink
@@ -122,7 +123,7 @@ const Banner = () => {
                                 ></PaginationLink>
                               </PaginationItem>
                             </PaginationContent>
-                          </Pagination>
+                          </Pagination> */}
                         </div>
                       </div>
                       <Image
@@ -155,7 +156,7 @@ const Banner = () => {
                           SHOP NOW <FaArrowRightLong />
                         </Button>
                         <div className="absolute bottom-0 left-[56px]">
-                          <Pagination>
+                          {/* <Pagination>
                             <PaginationContent>
                               <PaginationItem>
                                 <PaginationLink
@@ -176,7 +177,7 @@ const Banner = () => {
                                 ></PaginationLink>
                               </PaginationItem>
                             </PaginationContent>
-                          </Pagination>
+                          </Pagination> */}
                         </div>
                       </div>
                       <Image
