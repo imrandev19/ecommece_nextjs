@@ -1,6 +1,7 @@
 import AllProducts from '@/components/AllProducts'
 import Banner from '@/components/Banner'
 import Categories from '@/components/Categories'
+import Footer from '@/components/common/Footer'
 import Header from '@/components/common/Header'
 import FeaturedProduct from '@/components/FeaturedProduct'
 import Features from '@/components/Features'
@@ -19,6 +20,7 @@ const page = () => {
     <Introducing/>
     <AllProducts/>
     <Subscribe/>
+    <Footer/>
     </>
   )
 }
