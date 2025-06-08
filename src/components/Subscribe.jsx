@@ -17,7 +17,8 @@ const Subscribe = () => {
                                           SUBSCRIBE <FaArrowRightLong />
                                         </Button>
             </div>
-            <div className='flex gap-[48px]'>
+            <div className='flex gap-[48px] relative before:content-[] before:w-[424px] before:h-[0.1px] before:rounded-[1px] before:opacity-15 before:absolute before:bg-[#FFFFFF] top-0 before:left-2/4 before:translate-x-[-50%] '>
+               
                 <Image src="/images/google.png" alt="google" width={72} height={72}/>
                 <Image src="/images/Amazon.png" alt="Amazon" width={72} height={72}/>
                 <Image src="/images/philips.png" alt="Phillips" width={72} height={72}/>
