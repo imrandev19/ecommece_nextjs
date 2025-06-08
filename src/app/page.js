@@ -5,6 +5,7 @@ import Header from '@/components/common/Header'
 import FeaturedProduct from '@/components/FeaturedProduct'
 import Features from '@/components/Features'
 import Introducing from '@/components/Introducing'
+import Subscribe from '@/components/Subscribe'
 import React from 'react'
 
 const page = () => {
@@ -17,6 +18,7 @@ const page = () => {
     <FeaturedProduct/>
     <Introducing/>
     <AllProducts/>
+    <Subscribe/>
     </>
   )
 }
