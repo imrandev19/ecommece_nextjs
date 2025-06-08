@@ -5,6 +5,7 @@
 
 @theme{
   --font-public_sans : "var(--font-public_sans)"
+  --font-inter : "var(--font-inter)"
 }
 
 @theme inline {

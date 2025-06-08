@@ -6,7 +6,7 @@ const Footer = () => {
   return (
     <div className="bg-[#191C1F] h-[472px]">
       <Container>
-        <div className="footerTop pt-[72px] flex gap-6">
+        <div className="footerTop pt-[72px] flex gap-6 h-[404]">
           <div className="w-[312px]">
             <Image
               src="/images/Logofooter.png"
@@ -49,6 +49,52 @@ const Footer = () => {
                 <li  className="text-sm text-[#929FA5] font-medium leading-5" >About Us </li>
             </ul>
           </div>
+          <div className="w-[200px] ">
+            <h2 className="font-medium text-[16px] leading-6 uppercase text-[#FFFFFF] mb-[18px]">Download APP</h2>
+            <div className="w-[176px] h-[69px] bg-[#303639] flex items-center pl-6 gap-4 rounded-[3px] mb-3">
+                <Image src="/images/Googleplay.png" alt="Googleplay icon" width={32} height={32}/>
+                <div>
+                    <p className="font-normal text-[11px] leading-[13px] font-inter text-[#FFFFFF] ">Get it now</p>
+                    <h3 className="font-semibold text-sm leading-5 font-inter text-[#FFFFFF]">Google Play</h3>
+                </div>
+            </div>
+            <div className="w-[176px] h-[69px] bg-[#303639] flex items-center pl-6 gap-4 rounded-[3px]">
+                <Image src="/images/Applelogo.png" alt="Applelogo icon" width={32} height={32}/>
+                <div>
+                    <p className="font-normal text-[11px] leading-[13px] font-inter text-[#FFFFFF] ">Get it now</p>
+                    <h3 className="font-semibold text-sm leading-5 font-inter text-[#FFFFFF]">App Store</h3>
+                </div>
+            </div>
+          </div>
+          <div className="w-[312px] h-[194px]">
+            <h2 className="font-medium text-[#FFFFFF] text-[16px] leading-6 mb-[18px] uppercase">Popular Tag</h2>
+            <div className=" w-full flex flex-wrap gap-2">
+                <p className="py-[6px] font-medium text-sm leading-5 px-3 rounded-[2px] border-[1px] border-[#303639] text-[#FFFFFF]">Game</p>
+                <p className="py-[6px] font-medium text-sm leading-5  px-3 rounded-[2px] border-[1px] border-[#303639] text-[#FFFFFF]">iPhone</p>
+                <p className="py-[6px] font-medium text-sm leading-5  px-3 rounded-[2px] border-[1px] border-[#303639] text-[#FFFFFF]">TV</p>
+                <p className="py-[6px] font-medium text-sm leading-5 px-3 rounded-[2px] border-[1px] border-[#303639] text-[#FFFFFF]">Asus Laptops</p>
+                <p className="py-[6px] font-medium text-sm leading-5  px-3 rounded-[2px] border-[1px] border-[#303639] text-[#FFFFFF]">Macbook</p>
+                <p className="py-[6px] font-medium text-sm leading-5  px-3 rounded-[2px] border-[1px] border-[#303639] text-[#FFFFFF]">SSD</p>
+                <p className="py-[6px] font-medium text-sm leading-5 px-3 rounded-[2px] border-[1px] border-[#303639] text-[#FFFFFF]">Graphics Card</p>
+                <p className="py-[6px] font-medium text-sm leading-5 px-3 rounded-[2px] border-[1px] border-[#303639] text-[#FFFFFF]">Power Bank</p>
+                <p className="py-[6px] font-medium text-sm leading-5 px-3 rounded-[2px] border-[1px] border-[#303639] text-[#FFFFFF]">Smart TV</p>
+                <p className="py-[6px] font-medium text-sm leading-5 px-3 rounded-[2px] border-[1px] border-[#303639] text-[#FFFFFF]">Speaker</p>
+                <p className="py-[6px] font-medium text-sm leading-5 px-3 rounded-[2px] border-[1px] border-[#303639] text-[#FFFFFF]">Tablet</p>
+                <p className="py-[6px] font-medium text-sm leading-5 px-3 rounded-[2px] border-[1px] border-[#303639] text-[#FFFFFF]">Microwave</p>
+                <p className="py-[6px] font-medium text-sm leading-5 px-3 rounded-[2px] border-[1px] border-[#303639] text-[#FFFFFF]">Samsung </p>
+                
+            </div>
+          </div>
+        </div>
+        
+        
+
+      </Container>
+      <div className="bar w-full h-[1px] bg-[#303639] "></div>
+      <Container>
+            <div className="footerbottom">
+            
+            <p className="font-normal text-sm text-[#ADB7BC] leading-5 py-6 text-center" >Kinbo - eCommerce Template © 2025. Design by Templatecookie modify by Md. Imran Hossain</p>
         </div>
       </Container>
     </div>

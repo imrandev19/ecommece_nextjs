@@ -12,7 +12,7 @@ const Subscribe = () => {
                 <h2 className='font-semibold text-[32px] text-[#FFFFFF] leading-10 mb-3'>Subscribe to our newsletter</h2>
             <p className='font-normal text-[16px] text-[#FFFFFF] leading-6 mb-8 w-[536px]'>Praesent fringilla erat a lacinia egestas. Donec vehicula tempor libero et cursus. Donec non quam urna. Quisque vitae porta ipsum.</p>
             <div className='w-[624px] h-[72px] bg-white rounded-[3px] mb-8 flex items-center'>
-                <Input className="h-full border-none" type="email" placeholder="Email" />
+                <Input className="h-full border-none" type="email" placeholder="Email address" />
                 <Button className="text-[#FFFFFF] font-bold text-[16px] cursor-pointer leading-[56px] h-[56px] tracking-wide bg-[#FA8232] hover:bg-[#FA8232]/90 w-[191px] mr-3 ">
                                           SUBSCRIBE <FaArrowRightLong />
                                         </Button>
