@@ -1,3 +1,4 @@
+import AllProducts from '@/components/AllProducts'
 import Banner from '@/components/Banner'
 import Categories from '@/components/Categories'
 import Header from '@/components/common/Header'
@@ -15,6 +16,7 @@ const page = () => {
     <Categories/>
     <FeaturedProduct/>
     <Introducing/>
+    <AllProducts/>
     </>
   )
 }

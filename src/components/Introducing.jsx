@@ -16,7 +16,7 @@ const Introducing = () => {
               <h2 className="font-semibold text-[32px] leading-10 text-[#191C1F] mb-3">
                 New Apple Homepod Mini
               </h2>
-              <p className="text-[16px] font-normal leading-6 mb-5">
+              <p className="text-[16px] font-normal leading-6 mb-5 w-[280px]">
                 Jam-packed with innovation, HomePod mini delivers unexpectedly.
               </p>
               <Button className="text-[#FFFFFF] font-bold text-[16px] mb-7 cursor-pointer leading-[56px] h-[48px] tracking-wide bg-[#FA8232] hover:bg-[#FA8232]/90 w-[191px] rounded-[3px] uppercase ">
