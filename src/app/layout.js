@@ -1,5 +1,7 @@
 import {Public_Sans, Inter} from "next/font/google";
 import "./globals.css";
+import Header from "@/components/common/Header";
+import Footer from "@/components/common/Footer";
 
 const public_sans = Public_Sans({
   variable: "--font-public_sans",
@@ -20,7 +22,9 @@ export default function RootLayout({ children }) {
       <body
         className={`${public_sans.variable} ${inter.variable} font-public_sans antialiased`}
       >
+        <Header/>
         {children}
+        <Footer/>
       </body>
     </html>
   );

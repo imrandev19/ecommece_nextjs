@@ -1,4 +1,5 @@
-import React from "react";
+"use client"
+import React, { useEffect, useState } from "react";
 import Container from "./Container";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -22,8 +23,16 @@ import { AiOutlineCustomerService } from "react-icons/ai";
 import { PiInfo } from "react-icons/pi";
 import { LuPhoneCall } from "react-icons/lu";
 const Header = () => {
+  const [open,setOpen] = useState("true")
+  const [isSticky, setIsSticky]= useState(false)
+  useEffect(()=>{
+    window.addEventListener("scroll",()=>{
+      window.scrollY>100? setIsSticky(true):setIsSticky(false)
+    }, [])
+  })
   return (
-    <header>
+    <header className={`${isSticky && "fixed w-full z-100"}`}>
+      {open && 
       <div className="header_add bg-[#191C1F] relative">
         <Container>
           <div className="flex items-center justify-between">
@@ -45,10 +54,12 @@ const Header = () => {
             </Button>
           </div>
         </Container>
-        <Button className="p-2 bg-[#303639] hover:bg-[#303639]/90 absolute top-2/4 translate-y-[-50%] right-2">
-          <IoIosClose className="text-white w-[16px] h-[16px]" />
+        <Button onClick={()=>
+setOpen(false)
+        } className="p-2 bg-[#303639] hover:bg-[#303639]/90 absolute top-2/4 translate-y-[-50%] right-2 cusrsor-pointer">
+          <IoIosClose className="text-white w-[16px] h-[16px] cusrsor-pointer hover:text-red-500" />
         </Button>
-      </div>
+      </div>}
       {/* Header Ads part End */}
 
       {/* Header Welcome Part & Search Part Start */}
@@ -102,9 +113,9 @@ const Header = () => {
           </div>
         </Container>
       </div>
-      <div className="header_menu relative after:content-[''] after:w-full after:h-[.1px] after:bg-[#E4E7E9] after:absolute">
+      <div className="header_menu relative bg-white after:content-['']  after:w-full after:h-[.1px] after:bg-[#E4E7E9] after:absolute">
         <Container>
-          <div className="py-4 flex items-center justify-between  ">
+          <div className="py-4 flex items-center justify-between   ">
             <ul className=" flex text-sm font-normal leading-5">
               <li className="gap-2 py-[14px] px-6 flex items-center  text-[#5F6C72] cursor-pointer  hover:bg-[#F2F4F5] hover:text-[#191C1F]">
                 All Category <IoIosArrowDown />
