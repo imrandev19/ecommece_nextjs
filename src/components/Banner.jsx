@@ -1,5 +1,5 @@
 "use client"
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { Button } from "@/components/ui/button";
@@ -16,7 +16,18 @@ import {
   PaginationItem,
   PaginationLink,
 } from "@/components/ui/pagination";
+import axios from "axios";
+import Link from "next/link";
 const Banner = () => {
+  const [bannerOne, setBannerOne] = useState([])
+  function getBannerOne(){
+    axios.get("http://localhost:4000/api/banner/getbannerone").then((res)=>{
+      setBannerOne(res.data.data)
+    }).catch(err=>console.log(err))
+  }
+  useEffect(()=>{
+getBannerOne()
+  },[])
   return (
     <div className="pt-6">
       <Container>
@@ -54,8 +65,14 @@ const Banner = () => {
       ]}>
               <CarouselContent>
                 <CarouselItem>
+
                   <div className="relative" id="1" >
-                    <div className="flex items-center ">
+                    {bannerOne.map((item)=>(
+                      <Link href={item.href}><Image src={item.image} className="object-fit-contain" width={872} height={520} alt="Banner One"/></Link>
+                    ))
+
+                    }
+                    {/* <div className="flex items-center ">
                       <div className="w-[356px] ml-[56px]">
                         <h4 className="text-[#2484C2] relative font-semibold text-sm leading-5 before:content-[] before:w-6 before:h-[3px] before:bg-[#2484C2] before:absolute flex items-center ml-7 before:left-[-28px]  ">
                           THE BEST PLACE TO PLAY
@@ -81,7 +98,7 @@ const Banner = () => {
                     </div>
                     <p className="font-semibold text-[22px] leading-[100px] inline-block px-6 text-white bg-[#2DA5F3] rounded-full absolute right-[56px] top-0">
                       $299
-                    </p>
+                    </p> */}
                   </div>
                 </CarouselItem>
                 <CarouselItem>

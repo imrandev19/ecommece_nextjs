@@ -12,7 +12,7 @@ import React from 'react'
 const page = () => {
   return (
     <>
-    <Header/>
+
     <Banner/>
     <Features/>
     <Categories/>
@@ -20,7 +20,7 @@ const page = () => {
     <Introducing/>
     <AllProducts/>
     <Subscribe/>
-    <Footer/>
+    
     </>
   )
 }

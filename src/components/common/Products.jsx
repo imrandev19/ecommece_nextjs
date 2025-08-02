@@ -20,7 +20,7 @@ const Products = ({product, id}) => {
                                 <FiEye  className="w-[24px] h-[24px] text-[#191C1F]  hover:text-white " /> 
                             </div>
                             </div>
-                        <Image src={product.image} alt="A71 phone" width={202} height={172} className="mb-6 w-[202px] h-[172px] object-contain"/>
+                        <Image src={product?.thumbnail || product.image} alt="A71 phone" width={202} height={172} className="mb-6 w-[202px] h-[172px] object-contain"/>
                         <div className="flex gap-1 items-start">
                             <ul className='flex gap-1'>
                                 <li className='text-[#FA8232] '><FaStar /></li>

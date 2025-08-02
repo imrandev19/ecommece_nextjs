@@ -1,10 +1,10 @@
-"use client"
-import React, { useEffect, useState } from "react";
+"use client";
+
 import Container from "./Container";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { FaArrowRightLong } from "react-icons/fa6";
-import { IoIosClose } from "react-icons/io";
+import { IoIosArrowDropright, IoIosClose } from "react-icons/io";
 import { FaFacebook } from "react-icons/fa";
 import { FaTwitter } from "react-icons/fa6";
 import { FaPinterestP } from "react-icons/fa";
@@ -22,44 +22,83 @@ import { FaArrowsRotate } from "react-icons/fa6";
 import { AiOutlineCustomerService } from "react-icons/ai";
 import { PiInfo } from "react-icons/pi";
 import { LuPhoneCall } from "react-icons/lu";
+import React, { useEffect, useRef, useState } from "react";
+import axios from "axios";
 const Header = () => {
-  const [open,setOpen] = useState("true")
-  const [isSticky, setIsSticky]= useState(false)
-  useEffect(()=>{
-    window.addEventListener("scroll",()=>{
-      window.scrollY>100? setIsSticky(true):setIsSticky(false)
-    }, [])
+  const [category, setCategory] = useState([])
+  const [dropdownOpen, setDropdownOpen] = useState(false); //
+  const dropdownRef = useRef(null); //
+  function getCategory(){
+    axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/category/allcategories`)
+  .then(response => {
+    // Handle successful response
+    setCategory(response.data.data); // The retrieved data is in response.data
   })
+  .catch(error => {
+    // Handle errors
+    console.error(error);
+  });
+  }
+ useEffect(()=>{
+   getCategory()
+ },[])
+ console.log(category)
+
+  // ✅ Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+  const [open, setOpen] = useState("true");
+  const [isSticky, setIsSticky] = useState(false);
+  useEffect(() => {
+    window.addEventListener(
+      "scroll",
+      () => {
+        window.scrollY > 100 ? setIsSticky(true) : setIsSticky(false);
+      },
+      []
+    );
+  });
   return (
     <header className={`${isSticky && "fixed w-full z-100"}`}>
-      {open && 
-      <div className="header_add bg-[#191C1F] relative">
-        <Container>
-          <div className="flex items-center justify-between">
-            <Image
-              src="/images/headerAdd.png"
-              width={160}
-              height={43}
-              alt="offer image"
-            />
-            <h3 className="flex items-center gap-2 text-sm font-medium text-[#FFFFFF] leading-5">
-              Up to{" "}
-              <span className="text-[40px] leading-[48px] font-semibold text-[#EBC80C]">
-                59%
-              </span>
-              <span className="font-semibold">OFF</span>
-            </h3>
-            <Button className="text-[#191C1F] font-bold text-sm leading-[48px] tracking-wide bg-[#EBC80C] hover:bg-[#EBC80C]/90 ">
-              SHOP NOW <FaArrowRightLong />
-            </Button>
-          </div>
-        </Container>
-        <Button onClick={()=>
-setOpen(false)
-        } className="p-2 bg-[#303639] hover:bg-[#303639]/90 absolute top-2/4 translate-y-[-50%] right-2 cusrsor-pointer">
-          <IoIosClose className="text-white w-[16px] h-[16px] cusrsor-pointer hover:text-red-500" />
-        </Button>
-      </div>}
+      {open && (
+        <div className="header_add bg-[#191C1F] relative">
+          <Container>
+            <div className="flex items-center justify-between">
+              <Image
+                src="/images/headerAdd.png"
+                width={160}
+                height={43}
+                alt="offer image"
+              />
+              <h3 className="flex items-center gap-2 text-sm font-medium text-[#FFFFFF] leading-5">
+                Up to{" "}
+                <span className="text-[40px] leading-[48px] font-semibold text-[#EBC80C]">
+                  59%
+                </span>
+                <span className="font-semibold">OFF</span>
+              </h3>
+              <Button className="text-[#191C1F] font-bold text-sm leading-[48px] tracking-wide bg-[#EBC80C] hover:bg-[#EBC80C]/90 ">
+                SHOP NOW <FaArrowRightLong />
+              </Button>
+            </div>
+          </Container>
+          <Button
+            onClick={() => setOpen(false)}
+            className="p-2 bg-[#303639] hover:bg-[#303639]/90 absolute top-2/4 translate-y-[-50%] right-2 cusrsor-pointer"
+          >
+            <IoIosClose className="text-white w-[16px] h-[16px] cusrsor-pointer hover:text-red-500" />
+          </Button>
+        </div>
+      )}
       {/* Header Ads part End */}
 
       {/* Header Welcome Part & Search Part Start */}
@@ -83,7 +122,7 @@ setOpen(false)
             </div>
           </Container>
         </div>
-        
+
         <Container>
           <div className="flex items-center justify-between py-5">
             <Image
@@ -117,8 +156,44 @@ setOpen(false)
         <Container>
           <div className="py-4 flex items-center justify-between   ">
             <ul className=" flex text-sm font-normal leading-5">
-              <li className="gap-2 py-[14px] px-6 flex items-center  text-[#5F6C72] cursor-pointer  hover:bg-[#F2F4F5] hover:text-[#191C1F]">
-                All Category <IoIosArrowDown />
+              <li className="relative" ref={dropdownRef}>
+                {" "}
+                {/* ✅ wrapper ref */}
+                <div
+                  onClick={() => setDropdownOpen((prev) => !prev)} // ✅ toggle
+                  className="gap-2 py-[14px] px-6 flex items-center text-[#5F6C72] cursor-pointer hover:bg-[#F2F4F5] hover:text-[#191C1F]"
+                >
+                  All Category <IoIosArrowDown />
+                </div>
+                {/* ✅ Dropdown list */}
+                {dropdownOpen && (
+  <ul className="absolute left-0 top-full mt-2 w-60 bg-white shadow-lg border border-gray-200 z-10 rounded-md ">
+    {category.map((category, idx) => (
+      <li key={idx} className="group relative">
+        <div className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer flex justify-between items-center active:bg-[#EBC80C] active:text-white">
+          {category.categoryName}
+          {category.subcategory.length>0 && (
+            <IoIosArrowDropright className="ml-2 w-3 h-3" />
+          )}
+        </div>
+
+        {/* Subcategories */}
+        {category?.subcategory && (
+          <ul className="absolute left-full top-0 mt-0 ml-0 w-48 bg-white border border-gray-200 shadow-lg opacity-0 group-hover:opacity-100 group-hover:block hidden group-hover:flex flex-col z-20">
+            {category.subcategory.map((sub, subIdx) => (
+              <li
+                key={subIdx}
+                className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+              >
+                {sub.name}
+              </li>
+            ))}
+          </ul>
+        )}
+      </li>
+    ))}
+  </ul>
+)}
               </li>
               <li className="flex items-center py-[14px] px-6 gap-[6px]  text-[#5F6C72] cursor-pointer  hover:bg-[#F2F4F5] hover:text-[#191C1F]">
                 <CiLocationOn className="w-6 h-4" />
@@ -146,7 +221,6 @@ setOpen(false)
             </p>
           </div>
         </Container>
-        
       </div>
     </header>
   );
