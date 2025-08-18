@@ -1,128 +1,179 @@
 "use client";
-import Container from "@/components/common/Container";
-import Footer from "@/components/common/Footer";
-import Header from "@/components/common/Header";
-import React from "react";
-import { LiaHomeSolid } from "react-icons/lia";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 
-
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
-import { Slider } from "@/components/ui/slider"; // optional for price range
+import Image from "next/image";
+import axios from "axios";
+import { useSelector, useDispatch } from 'react-redux';
+import { selectedProduct } from "@/lib/productSlice";
+const FilterSidebar = () => {
+  let dispatch = useDispatch()
 
-const categories = [
-  "Electronics Devices",
-  "Computer & Laptop",
-  "Computer Accessories",
-  "SmartPhone",
-  "Headphone",
-  "Mobile Accessories",
-  "Gaming Console",
-  "Camera & Photo",
-  "TV & Homes Appliances",
-  "Watches & Accessories",
-  "GPS & Navigation",
-  "Wearable Technology",
-];
+  const [priceRange, setPriceRange] = useState([0, 1000]);
+const [categories,setCategories] = useState([])
+const [activeValue, setActiveValue] = useState("")
 
-const priceRanges = [
-  "All Price",
-  "Under $20",
-  "$25 to $100",
-  "$100 to $300",
-  "$300 to $500",
-  "$500 to $1,000",
-  "$1,000 to $10,000",
-];
+function getCategory(){
+    axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/category/allcategories`)
+  .then(response => {
+    // Handle successful response
+    setCategories(response.data.data); // The retrieved data is in response.data
+  })
+  .catch(error => {
+    // Handle errors
+    console.error(error);
+  });
+  }
+ useEffect(()=>{
+   getCategory()
+ },[])
+ console.log(categories)
 
+ useEffect(() => {
+  if (activeValue) {
+    dispatch(selectedProduct(activeValue)); // send only selected category
+  }
+}, [activeValue, dispatch]);
+  const priceOptions = [
+    "Under $20",
+    "$20 to $100",
+    "$100 to $300",
+    "$300 to $500",
+    "$500 to $1,000",
+    "$1,000 to $10,000",
+  ];
 
-const Filter = () => {
-    const [selectedCategory, setSelectedCategory] = useState("Electronics Devices");
-  const [selectedPrice, setSelectedPrice] = useState("$300 to $500");
-  const [price, setPrice] = useState([100, 500]);
+  const brands = [
+    "Apple",
+    "Microsoft",
+    "Dell",
+    "Sony",
+    "LG",
+    "One Plus",
+    "Google",
+    "Samsung",
+    "HP",
+    "Xiaomi",
+    "Panasonic",
+    "Intel",
+  ];
+
+  const tags = [
+    "Game",
+    "iPhone",
+    "TV",
+    "Asus Laptops",
+    "Macbook",
+    "SSD",
+    "Graphics Card",
+    "Power Bank",
+    "Smart TV",
+    "Speaker",
+    "Tablet",
+    "Microwave",
+    "Samsung",
+  ];
+console.log(activeValue)
   return (
-    <div className="bg-[#F2F4F5] h-[72px] pt-[26px]">
-        <Container>
-          <div className="flex gap-2 items-center">
-            <LiaHomeSolid width={20} height={20} className="text-[#5F6C72]" />
-            <div>
-              <Breadcrumb>
-                <BreadcrumbList>
-                  <BreadcrumbItem>
-                    <BreadcrumbLink href="/" className="text-[#5F6C72] text-sm leading-5 font-normal">Home</BreadcrumbLink>
-                  </BreadcrumbItem>
-                  <BreadcrumbSeparator />
-                  <BreadcrumbItem>
-                    <BreadcrumbLink href="/components" className="text-[#5F6C72] text-sm leading-5 font-normal">
-                      Shop
-                    </BreadcrumbLink>
-                  </BreadcrumbItem>
-                  <BreadcrumbSeparator />
-                  <BreadcrumbItem>
-                    <BreadcrumbLink href="/" className="text-[#5F6C72] text-sm leading-5 font-normal">Shop Grid</BreadcrumbLink>
-                  </BreadcrumbItem>
-                  <BreadcrumbSeparator />
-                  <BreadcrumbItem>
-                    <BreadcrumbPage className="text-[#2DA5F3] text-sm leading-5 font-medium" >Electronic Devices</BreadcrumbPage>
-                  </BreadcrumbItem>
-                </BreadcrumbList>
-              </Breadcrumb>
-            </div>
-          </div>
-          <div >
-            <aside className="w-72 p-4 border-r space-y-6">
+    <>
+    
+    <div className="w-full max-w-[280px] p-4 space-y-6 border-r border-gray-200 font-public_sans text-gray-700">
       {/* Category Filter */}
+       {/* Category Filter Section */}
       <div>
-        <h3 className="text-sm font-bold mb-4">CATEGORY</h3>
-        <RadioGroup value={selectedCategory} onValueChange={setSelectedCategory} className="space-y-2">
-          {categories.map((cat) => (
-            <div key={cat} className="flex items-center space-x-2">
-              <RadioGroupItem value={cat} id={cat} />
-              <Label htmlFor={cat} className="text-sm">{cat}</Label>
-            </div>
-          ))}
-        </RadioGroup>
+        <h4 className="text-md font-semibold text-gray-700 mb-2">CATEGORY</h4>
+        <RadioGroup
+  value={activeValue} // bind selected value
+  onValueChange={(value) => setActiveValue(value)} // update selected value
+  className="space-y-1"
+>
+  {categories.map((cat, idx) => (
+    <div key={idx} className="flex items-center space-x-2">
+      <RadioGroupItem value={cat._id} id={`cat-${idx}`} />
+      <Label htmlFor={`cat-${idx}`}>{cat.categoryName}</Label>
+    </div>
+  ))}
+</RadioGroup>
       </div>
 
-      {/* Price Range */}
+      {/* Price Range Slider */}
       <div>
-        <h3 className="text-sm font-bold mb-4">PRICE RANGE</h3>
-        <div className="px-2 mb-4">
-          <Slider
-            defaultValue={price}
-            min={0}
-            max={1000}
-            step={10}
-            onValueChange={setPrice}
-          />
-          <div className="flex justify-between text-xs mt-2">
-            <span>${price[0]}</span>
-            <span>${price[1]}</span>
-          </div>
+        <h4 className="text-md font-semibold mb-2">PRICE RANGE</h4>
+        <Slider
+          defaultValue={priceRange}
+          max={1000}
+          step={10}
+          onValueChange={setPriceRange}
+        />
+        <div className="flex justify-between mt-2 text-sm">
+          <span>${priceRange[0]}</span>
+          <span>${priceRange[1]}</span>
         </div>
-        <RadioGroup value={selectedPrice} onValueChange={setSelectedPrice} className="space-y-2">
-          {priceRanges.map((range) => (
-            <div key={range} className="flex items-center space-x-2">
-              <RadioGroupItem value={range} id={range} />
-              <Label htmlFor={range} className="text-sm">{range}</Label>
+      </div>
+
+      {/* Price Options Radio */}
+      <div>
+        <RadioGroup defaultValue={priceOptions[0]} className="space-y-1">
+          {priceOptions.map((price, idx) => (
+            <div key={idx} className="flex items-center space-x-2">
+              <RadioGroupItem value={price} id={`price-${idx}`} />
+              <Label htmlFor={`price-${idx}`}>{price}</Label>
             </div>
           ))}
         </RadioGroup>
       </div>
-    </aside>
-          </div>
-        </Container>
-      </div>
-  )
-}
 
-export default Filter
+      {/* Popular Brands */}
+      <div>
+        <h4 className="text-md font-semibold mb-2">POPULAR BRANDS</h4>
+        <div className="grid grid-cols-2 gap-2">
+          {brands.map((brand, idx) => (
+            <div key={idx} className="flex items-center space-x-2">
+              <Checkbox id={`brand-${idx}`} />
+              <Label htmlFor={`brand-${idx}`}>{brand}</Label>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Popular Tags */}
+      <div>
+        <h4 className="text-md font-semibold mb-2">POPULAR TAG</h4>
+        <div className="flex flex-wrap gap-2">
+          {tags.map((tag, idx) => (
+            <span
+              key={idx}
+              className="px-2 py-1 border border-gray-300 rounded text-xs hover:bg-gray-100 cursor-pointer"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* Promotional Item */}
+      <div className="mt-4">
+        <Image
+          src="/images/A71b.png"
+          alt="Promo Watch"
+          width={260}
+          height={200}
+          className="rounded-md"
+        />
+        <div className="text-center mt-2">
+          <p className="text-sm font-semibold">Heavy on Features. Light on Price.</p>
+          <p className="text-orange-600 text-md font-bold mt-1">Only for $299 USD</p>
+          <button className="mt-2 px-4 py-1 bg-orange-500 text-white text-sm rounded hover:bg-orange-600">
+            ADD TO CART
+          </button>
+        </div>
+      </div>
+    </div>
+    </>
+  );
+};
+
+export default FilterSidebar;

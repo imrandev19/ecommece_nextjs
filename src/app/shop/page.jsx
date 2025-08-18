@@ -1,6 +1,7 @@
 
 import Breadcrumb from '@/components/common/Breadcrumb'
 import Container from '@/components/common/Container'
+import Filter from '@/components/Filter'
 import Paginate from '@/components/Paginate'
 
 import React from 'react'
@@ -12,7 +13,9 @@ const page = () => {
       <Breadcrumb/>
         <Container>
         <div className='flex justify-between'>
-          <div className='w-[20%] h-screen bg-red-500'></div>
+          <div className='w-[20%] '>
+            <Filter/>
+          </div>
        <div className='w-[78%]'>All Products
         <Paginate itemsPerPage={6}/>
        </div>

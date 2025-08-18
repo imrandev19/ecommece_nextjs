@@ -285,7 +285,7 @@ return (
                 <li onClick={()=>handleTab(item.categoryName)} key={index}  className={`font-normal text-[#5F6C72] p-2 text-sm leading-5 cursor-pointer ${activeTab == item.categoryName && "border-b-4 border-[#FA8232] font-semibold text-[#191C1F]"} `}>{item.categoryName}</li>
                 ))}
                 
-                <li className=" font-semibold text-sm leading-5 text-[#FA8232] ml-4"><Link href="#" className="flex gap-2">Browse All Product <FaArrowRightLong className="w-[20px] h-[20px] font-normal" /></Link> </li>
+                <li className=" font-semibold text-sm leading-5 text-[#FA8232] ml-4"><Link href="/shop" className="flex gap-2">Browse All Product <FaArrowRightLong className="w-[20px] h-[20px] font-normal" /></Link> </li>
               </ul>
             </div>
             <div>

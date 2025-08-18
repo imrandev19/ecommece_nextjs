@@ -24,6 +24,7 @@ import { PiInfo } from "react-icons/pi";
 import { LuPhoneCall } from "react-icons/lu";
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
+import Link from "next/link";
 const Header = () => {
   const [category, setCategory] = useState([])
   const [dropdownOpen, setDropdownOpen] = useState(false); //
@@ -125,12 +126,14 @@ const Header = () => {
 
         <Container>
           <div className="flex items-center justify-between py-5">
+            <Link href={"/"}>
             <Image
               src="/images/Logo.png"
               alt="Clicon Logo"
               width={177}
               height={48}
             />
+            </Link>
             <div className="w-[646px] flex items-center relative h-[48px] ">
               <Input
                 className="bg-white placeholder:text-[#77878F] h-full"
