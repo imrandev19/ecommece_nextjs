@@ -4,7 +4,17 @@ import { CiShoppingCart } from "react-icons/ci";
 import { FiEye } from "react-icons/fi";
 import Image from 'next/image';
 import { FaStar } from "react-icons/fa";    
+import { useDispatch } from 'react-redux';
+import { useRouter } from "next/navigation";
+import { selectedProduct } from '@/lib/productSlice';
 const Products = ({product, id}) => {
+    const router = useRouter();
+    const dispatch = useDispatch()
+    const handleEye = (product)=>{
+        dispatch(selectedProduct(product));
+        router.push(`/shop/${product?.slug}`)
+        
+    }
   return (
     
                     <div key={id} className=" p-4 border-1 border-[#E4E7E9] group relative overflow-hidden">
@@ -16,7 +26,7 @@ const Products = ({product, id}) => {
                             <div className="z-100 p-3 bg-white rounded-full cursor-pointer hover:bg-[#FA8232] ">
                                 <CiShoppingCart  className="w-[24px] h-[24px] text-[#191C1F] hover:text-white  " /> 
                             </div>
-                            <div className="z-100 p-3 bg-white rounded-full cursor-pointer hover:bg-[#FA8232]  ">
+                            <div onClick={()=>handleEye(product)}   className="z-100 p-3 bg-white rounded-full cursor-pointer hover:bg-[#FA8232]  ">
                                 <FiEye  className="w-[24px] h-[24px] text-[#191C1F]  hover:text-white " /> 
                             </div>
                             </div>

@@ -7,9 +7,12 @@ export const productSlice = createSlice({
   name: 'product',
   initialState,
   reducers: {
-    selectedProduct: (state, action) => {
+    selectedCategory: (state, action) => {
       state.currentCategory = action.payload;
     },
+    selectedProduct:(state,action)=>{
+      state.viewProduct =action.payload
+    }
   },
 });
 

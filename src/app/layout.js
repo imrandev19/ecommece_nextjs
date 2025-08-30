@@ -22,11 +22,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${public_sans.variable} ${inter.variable} font-public_sans antialiased`}>
-        <Header />
         <Providers>
+        <Header />
           {children}
-        </Providers>
         <Footer />
+        </Providers>
       </body>
     </html>
   );
