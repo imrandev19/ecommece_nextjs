@@ -1,16 +1,35 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button"; // optional if you use shadcn/ui
 import Container from "./common/Container";
-
+import { useDispatch } from "react-redux";
+import { selectedProduct, selectProductforAdd } from "@/lib/productSlice";
+import { useRouter } from "next/navigation";
 
 const ProductDetails = ({ details }) => {
-  
+  const router = useRouter();
+  const dispatch = useDispatch();
+  useEffect(() => {
+    const savedProduct = localStorage.getItem("selectedProduct");
+    if (savedProduct) {
+      dispatch(selectedProduct(JSON.parse(savedProduct)));
+    }
+  }, [dispatch]);
+ const handleAddtoCart = (product) => {
+  dispatch(selectProductforAdd(product));
+
+  // ✅ update localStorage with whole cart
+  const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
+  const updatedCart = [...existingCart, product];
+  localStorage.setItem("cart", JSON.stringify(updatedCart));
+
+  router.push("/cart");
+};
   return (
     <Container>
-     <div className="container mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="container mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Left: Product Images */}
         <div>
           <Image
@@ -20,8 +39,8 @@ const ProductDetails = ({ details }) => {
             height={400}
             className="rounded-2xl shadow-md object-contain w-full"
           />
-          </div>
-          <div>
+        </div>
+        <div>
           <h1 className="text-2xl font-semibold mb-2">{details?.title}</h1>
           <p className="text-gray-500 text-sm mb-2">SKU: {details?.slug}</p>
           <p className="text-green-600 font-medium mb-2">
@@ -42,7 +61,7 @@ const ProductDetails = ({ details }) => {
               </span>
             )}
           </div>
-           {/* Variants */}
+          {/* Variants */}
           <div className="mb-4">
             <label className="block font-medium">Memory</label>
             <select className="border rounded-md px-3 py-2 mt-1 w-full">
@@ -58,21 +77,21 @@ const ProductDetails = ({ details }) => {
               <option>512GB SSD</option>
             </select>
           </div>
-           {/* Action Buttons */}
+          {/* Action Buttons */}
           <div className="flex gap-3">
-            <Button className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-xl">
+            <Button
+              onClick={() => handleAddtoCart(details)}
+              className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-xl"
+            >
               Add to Cart
             </Button>
             <Button className="bg-black hover:bg-gray-800 text-white px-6 py-3 rounded-xl">
               Buy Now
             </Button>
-          </  div>
-        
-    
           </div>
-          
-          </div>
-           {/* Tabs: Description / Info */}
+        </div>
+      </div>
+      {/* Tabs: Description / Info */}
       <div className="container mx-auto px-4 py-8">
         <div className="border-b flex gap-6 mb-6">
           <button className="pb-2 border-b-2 border-orange-500 font-medium">

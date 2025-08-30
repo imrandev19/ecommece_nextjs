@@ -43,7 +43,7 @@ const Header = () => {
  useEffect(()=>{
    getCategory()
  },[])
- console.log(category)
+
 
   // ✅ Close dropdown when clicking outside
   useEffect(() => {
