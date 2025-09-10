@@ -25,7 +25,9 @@ import { LuPhoneCall } from "react-icons/lu";
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
+import SignIn from "@/components/SignIn"
 const Header = () => {
+  const [showSignup, setShowSingUp] = useState(false)
   const [category, setCategory] = useState([])
   const [dropdownOpen, setDropdownOpen] = useState(false); //
   const dropdownRef = useRef(null); //
@@ -57,6 +59,7 @@ const Header = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+    
   const [open, setOpen] = useState("true");
   const [isSticky, setIsSticky] = useState(false);
   useEffect(() => {
@@ -150,7 +153,13 @@ const Header = () => {
                 </span>
               </div>
               <GrFavorite className="w-8 h-8 text-white" />
-              <LuUserRound className="w-8 h-8 text-white" />
+              <div className="relative">
+                <LuUserRound onClick={()=>setShowSingUp(!showSignup)} className="w-8 h-8 text-white" />
+                {showSignup && <div className="absolute top-[40px] right-0 z-100">
+                  <SignIn></SignIn>
+                  </div>}
+              </div>
+              
             </div>
           </div>
         </Container>
