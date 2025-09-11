@@ -25,9 +25,14 @@ import { LuPhoneCall } from "react-icons/lu";
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
-import SignIn from "@/components/SignIn"
 import { useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import toast, { Toaster } from 'react-hot-toast';
+import { currentUserInfo } from "@/lib/authSlice";
 const Header = () => {
+  const dispatch = useDispatch()
+  const user = useSelector((state)=>state.auth.currentUser)
+  console.log(user)
   const router = useRouter()
   const handleAccountIcon=()=>{
     router.push("/login")
@@ -75,6 +80,16 @@ const Header = () => {
       []
     );
   });
+  const [logoutBtn, setLogoutBtn] = useState(false)
+  const handleLogOut=()=>{
+     axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`)
+     dispatch(currentUserInfo(null));   
+               localStorage.setItem('currentUser', null) 
+     toast.success('Logout Successfully')
+}
+//   useEffect(()=>{
+//  console.log("logout")
+//   },[handleLogOut])
   return (
     <header className={`${isSticky && "fixed w-full z-100"}`}>
       {open && (
@@ -114,6 +129,10 @@ const Header = () => {
         <div className="header_welcome py-4 relative after:content-[''] after:w-full after:h-[.1px] after:bg-[#E4E7E9] after:absolute after:mt-4 ">
           <Container>
             <div className="flex items-center justify-between">
+              <Toaster
+  position="top-center"
+  reverseOrder={false}
+/>
               <h3 className="text-[#FFFFFF] text-sm leading-5 font-normal">
                 Welcome to Clicon online eCommerce store.{" "}
               </h3>
@@ -157,8 +176,14 @@ const Header = () => {
                 </span>
               </div>
               <GrFavorite className="w-8 h-8 text-white" />
-              <div className="relative">
-                <LuUserRound onClick={handleAccountIcon} className="w-8 h-8 text-white" />
+              <div>
+                {user? 
+                <div className="relative">
+                  <p onClick={()=>setLogoutBtn(!logoutBtn)} className="text-white hover:cursor-pointer">{user.username}</p>
+                  {logoutBtn && <button onClick={handleLogOut}  className="text-white absolute top-8 hover:bg-amber-500 hover:cursor-pointer rounded-xl right-0 bg-red-500 px-5 py-3 flex items-center z-100">Logout</button> }
+                </div>:  
+                <LuUserRound onClick={handleAccountIcon} className="w-8 h-8 text-white hover:cursor-pointer" />}
+               
                 
               </div>
               

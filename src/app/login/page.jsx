@@ -31,12 +31,12 @@ const SignUp = () => {
   };
   const handleLogin = () => {
     axios
-      .post(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, userInfo)
+      .post(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, userInfo,{withCredentials:true})
       .then((res) => {
-        console.log(res.data.success)
-        console.log(res.data.data)
+        console.log(res.data)
         if (res.data) {
-          dispatch(currentUserInfo(res.data.data));       
+          dispatch(currentUserInfo(res.data.data));   
+          localStorage.setItem('currentUser', JSON.stringify(res.data.data))    
           toast.success("Login Successfully!");
           router.push("/");
         }
@@ -72,7 +72,7 @@ const SignUp = () => {
       <input
         onChange={handlePassword}
         className="w-[360] border-gray-300 border rounded-[2px] h-[44px] mb-5"
-        type="text"
+        type="password"
       />
       <button
         onClick={handleLogin}
