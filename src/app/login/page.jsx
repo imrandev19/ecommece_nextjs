@@ -1,5 +1,6 @@
 "use client";
 
+import Container from "@/components/common/Container";
 import { currentUserInfo } from "@/lib/authSlice";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -32,14 +33,10 @@ const SignUp = () => {
     axios
       .post(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, userInfo)
       .then((res) => {
-        if (res.data.success) {
-          const userData = res.data.data;
-          dispatch(currentUserInfo(userData));
-           if (typeof window !== "undefined") {
-          localStorage.setItem("currentUser", JSON.stringify(userData));
-        }
-
-          
+        console.log(res.data.success)
+        console.log(res.data.data)
+        if (res.data) {
+          dispatch(currentUserInfo(res.data.data));       
           toast.success("Login Successfully!");
           router.push("/");
         }
@@ -54,7 +51,11 @@ const SignUp = () => {
     router.push("/registration");
   };
   return (
-    <div className="bg-white w-[424px] p-8 rounded-xl text-center">
+    <Container>
+        <div className="flex justify-center">
+
+
+        <div className="bg-white w-[424px] p-8 rounded-xl text-center ">
       <div>
         <Toaster position="top-center" reverseOrder={false} />
       </div>
@@ -88,6 +89,8 @@ const SignUp = () => {
         Create Account
       </button>
     </div>
+        </div>
+    </Container>
   );
 };
 

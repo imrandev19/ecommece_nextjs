@@ -1,9 +1,14 @@
 'use client'
 import Container from '@/components/common/Container'
 import axios from 'axios'
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 import toast, { Toaster } from 'react-hot-toast';
+import { useSelector } from 'react-redux';
 const page = () => {
+  const router =useRouter()
+  const userData = useSelector((state)=>state.auth.currentUser)
+  console.log(userData?.email)
     const [otp, setOtp]= useState({
         otp1:"",
         otp2:"",
@@ -18,20 +23,21 @@ const page = () => {
     const handleOtpVerify=()=>{
         axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/otpverify`, {
             otp:`${otp.otp1}${otp.otp2}${otp.otp3}${otp.otp4}${otp.otp5}${otp.otp6}`,
-            email: "imu@gmail.com"
+            email: userData?.email
         }).then((res)=>{
             if(res.data.success){
                 toast.success('OTP Verified Successfully!')
+              router.push("/")
             }else{
                 toast.error('OTP Mismatch')
             }
         }).catch((err)=>{
-            console.log(err)
+            toast.error(err.response?.data?.message || err.message || 'Something went wrong');
         })
         console.log(otp)
     }
     const handleResentOtp=()=>{
-        axios.patch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/resendotp`, {email: "imu@gmail.com"})
+        axios.patch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/resendotp`, {email: userData?.email})
         toast.success('OTP Resend Successfully!')
     }
   return (

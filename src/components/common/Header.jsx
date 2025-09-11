@@ -26,8 +26,12 @@ import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
 import SignIn from "@/components/SignIn"
+import { useRouter } from "next/navigation";
 const Header = () => {
-  const [showSignup, setShowSingUp] = useState(false)
+  const router = useRouter()
+  const handleAccountIcon=()=>{
+    router.push("/login")
+  }
   const [category, setCategory] = useState([])
   const [dropdownOpen, setDropdownOpen] = useState(false); //
   const dropdownRef = useRef(null); //
@@ -154,10 +158,8 @@ const Header = () => {
               </div>
               <GrFavorite className="w-8 h-8 text-white" />
               <div className="relative">
-                <LuUserRound onClick={()=>setShowSingUp(!showSignup)} className="w-8 h-8 text-white" />
-                {showSignup && <div className="absolute top-[40px] right-0 z-100">
-                  <SignIn></SignIn>
-                  </div>}
+                <LuUserRound onClick={handleAccountIcon} className="w-8 h-8 text-white" />
+                
               </div>
               
             </div>

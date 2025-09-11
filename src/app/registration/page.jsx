@@ -1,9 +1,14 @@
 "use client";
 import Container from "@/components/common/Container";
+import { currentUserInfo } from "@/lib/authSlice";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import toast, { Toaster } from 'react-hot-toast';
+import { useDispatch } from "react-redux";
 const page = () => {
+  const router = useRouter()
+  const dispatch = useDispatch()
   const [userInfo, setUserInfo] = useState({
     username: "",
     email: "",
@@ -39,7 +44,15 @@ const page = () => {
             email: "",
             password: "",
           });
+          const currentUser ={
+            username: res.data.user.username,
+            email: res.data.user.email,
+            message: res.data.message,
+          }
+          dispatch(currentUserInfo(currentUser))
+          localStorage.setItem('currentUser', JSON.stringify(currentUser))
           toast.success('Account Created Successfully!')
+          router.push("/otp-verify")
         }else{
             toast.error("Something went Wrong")
         }
@@ -80,7 +93,7 @@ const page = () => {
           />
           <button
             onClick={handleReg}
-            className="mx-auto block bg-[#FA8232] w-[360px] text-white font-semibold text-[20px] py-2 mb-6"
+            className="mx-auto block bg-[#FA8232] w-[360px] text-white font-semibold text-[20px] py-2 mb-6 hover:cursor-pointer hover:bg-amber-600"
           >
             Create Account
           </button>
