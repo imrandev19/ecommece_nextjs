@@ -30,9 +30,10 @@ import { useDispatch, useSelector } from "react-redux";
 import toast, { Toaster } from 'react-hot-toast';
 import { currentUserInfo } from "@/lib/authSlice";
 const Header = () => {
+  const [searchProduct, setSearchProduct] = useState([])
   const dispatch = useDispatch()
   const user = useSelector((state)=>state.auth.currentUser)
-  console.log(user)
+  
   const router = useRouter()
   const handleAccountIcon=()=>{
     router.push("/login")
@@ -87,9 +88,18 @@ const Header = () => {
                localStorage.setItem('currentUser', null) 
      toast.success('Logout Successfully')
 }
-//   useEffect(()=>{
-//  console.log("logout")
-//   },[handleLogOut])
+const handleSearch =(e)=>{
+e.preventDefault();
+const search = e.target.value
+axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/product/search-product?search=${search}`).then((res)=>{
+setSearchProduct(res.data.data)
+}).catch((err)=>{
+  console.log(err)
+})
+}
+console.log(searchProduct)
+
+
   return (
     <header className={`${isSticky && "fixed w-full z-100"}`}>
       {open && (
@@ -161,12 +171,34 @@ const Header = () => {
             />
             </Link>
             <div className="w-[646px] flex items-center relative h-[48px] ">
-              <Input
+              <Input onChange={handleSearch}
                 className="bg-white placeholder:text-[#77878F] h-full"
                 type="search"
                 placeholder="Search for anything..."
               />
-              <CiSearch className="text-[#191C1F] w-5 h-5 absolute  right-[14px] flex items-center" />
+              <CiSearch  className="text-[#191C1F] w-5 h-5 absolute  right-[14px] flex items-center" />
+              <div className="absolute w-full top-12 left-0 z-100 shadow-lg">
+              {searchProduct.length>0 && 
+              <div>
+                  {searchProduct.map((product)=>(
+                    <div className="p-4 bg-white flex gap-3">
+                      <Image
+                src={product.thumbnail}
+                width={50}
+                height={43}
+                alt="search image"
+                />
+                <div>
+                   <h3>{product.title}</h3>
+                <p>{product.description}</p>
+                </div>
+               
+                    </div>
+                  ))}
+              </div>
+              }
+
+              </div>
             </div>
             <div className="gap-6 flex items-center">
               <div className="relative ">
