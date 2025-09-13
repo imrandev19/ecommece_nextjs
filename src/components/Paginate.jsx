@@ -5,7 +5,7 @@ import ReactPaginate from "react-paginate";
 import Products from "./common/Products";
 import axios from "axios";
 
-const Paginate = ({ itemsPerPage }) => {
+const Paginate = ({   itemsPerPage }) => {
   const [items, setItems] = useState([]);
   const activeCategory = useSelector((state) => state.product.currentCategory);
   const [itemOffset, setItemOffset] = useState(0);

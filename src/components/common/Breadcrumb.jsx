@@ -18,7 +18,7 @@ const Breadcrumb = () => {
   } )
  
   return (
-    <div className='w-full'>
+    <div className='w-full border-2'>
       <Container>
 
       <ul className='flex gap-2 items-center '>
