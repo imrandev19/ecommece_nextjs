@@ -20,14 +20,7 @@ const Products = ({ product, id }) => {
 
   const handleAddToCart = (product) => {
     dispatch(selectProductforAdd(product));
-
-    // ✅ store full cart in localStorage
-    const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
-    const exists = existingCart.find((p) => p.id === product.id);
-    if (!exists) {
-      const updatedCart = [...existingCart, product];
-      localStorage.setItem("cart", JSON.stringify(updatedCart));
-    }
+    console.log(product)
   };
 
   return (

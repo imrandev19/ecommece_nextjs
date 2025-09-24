@@ -1,30 +1,29 @@
+"use client";
 
-import Breadcrumb from '@/components/common/Breadcrumb'
-import Container from '@/components/common/Container'
-import Filter from '@/components/Filter'
-import Paginate from '@/components/Paginate'
+import Breadcrumb from "@/components/common/Breadcrumb";
+import Container from "@/components/common/Container";
+import FilterSidebar from "@/components/Filter";
+import Paginate from "@/components/Paginate";
+import { useState } from "react";
 
-import React from 'react'
+const ShopPage = () => {
+  const [filters, setFilters] = useState({});
 
-const page = () => {
-  
   return (
     <main>
-      <Breadcrumb/>
-        <Container>
-        <div className='flex justify-between'>
-          <div className='w-[20%] '>
-            <Filter/>
+      <Breadcrumb />
+      <Container>
+        <div className="flex justify-between">
+          <div className="w-[20%]">
+            <FilterSidebar setFilters={setFilters} />
           </div>
-       <div className='w-[78%]'>All Products
-        <Paginate itemsPerPage={6}/>
-       </div>
+          <div className="w-[78%]">
+            <Paginate itemsPerPage={12} filters={filters} />
+          </div>
         </div>
-       
-        </Container>
-        
+      </Container>
     </main>
-  )
-}
+  );
+};
 
-export default page
+export default ShopPage;

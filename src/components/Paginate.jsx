@@ -1,78 +1,69 @@
 "use client";
-import { useSelector } from "react-redux";
-import React, { useEffect, useState } from "react";
-import ReactPaginate from "react-paginate";
-import Products from "./common/Products";
+import { useEffect, useState } from "react";
 import axios from "axios";
+import Products from "./common/Products";
 
-const Paginate = ({   itemsPerPage }) => {
-  const [items, setItems] = useState([]);
-  const activeCategory = useSelector((state) => state.product.currentCategory);
-  const [itemOffset, setItemOffset] = useState(0);
+const Paginate = ({ itemsPerPage, filters }) => {
+  const [products, setProducts] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  useEffect(() => {
-    getData();
-    setItemOffset(0); // reset to first page when category changes
-  }, [activeCategory]); // <--- now it will refetch when category changes
-
-  const getData = async () => {
+  const fetchProducts = async () => {
     try {
-      const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/product/getallproducts`,
-        {
-          params: {
-            category: activeCategory || "all"
-          }
-        }
-      );
-      setItems(response.data.data || []);
-    } catch (error) {
-      console.error("Error fetching data:", error);
+      let url = `${process.env.NEXT_PUBLIC_API_URL}/api/product/getallproducts`;
+
+      // Append query parameters based on filters
+      const query = new URLSearchParams();
+      if (filters?.category) query.append("category", filters.category);
+      if (filters?.subcategory) query.append("subcategory", filters.subcategory);
+      if (filters?.brand) query.append("brand", filters.brand);
+      if (filters?.minPrice) query.append("minPrice", filters.minPrice);
+      if (filters?.maxPrice) query.append("maxPrice", filters.maxPrice);
+      if (filters?.popular) query.append("popular", true);
+
+      const res = await axios.get(`${url}?${query.toString()}`);
+      setProducts(res.data.data || []);
+      setCurrentPage(1); // reset to page 1 when filters change
+    } catch (err) {
+      console.error(err);
     }
   };
 
-  // Pagination
-  const endOffset = itemOffset + itemsPerPage;
-  const currentItems = items.slice(itemOffset, endOffset);
-  const pageCount = Math.ceil(items.length / itemsPerPage);
+  useEffect(() => {
+    fetchProducts();
+  }, [filters]);
 
-  const handlePageClick = (event) => {
-    const newOffset = (event.selected * itemsPerPage) % items.length;
-    setItemOffset(newOffset);
-  };
-
-  const Items = ({ currentItems }) => (
-    <div className="grid grid-cols-3 gap-4">
-      {currentItems.length > 0 ? (
-        currentItems.map((item, index) => (
-          <Products key={item._id || index} product={item} />
-        ))
-      ) : (
-        <p className="col-span-3 text-center text-gray-500">No products found</p>
-      )}
-    </div>
-  );
+  // Pagination logic
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentItems = products.slice(startIndex, startIndex + itemsPerPage);
+  const totalPages = Math.ceil(products.length / itemsPerPage);
 
   return (
-    <>
-      <Items currentItems={currentItems} />
-      {pageCount > 1 && (
-        <ReactPaginate
-          breakLabel="..."
-          nextLabel=">"
-          onPageChange={handlePageClick}
-          pageRangeDisplayed={5}
-          pageCount={pageCount}
-          previousLabel="<"
-          renderOnZeroPageCount={null}
-          className="flex gap-2 my-5 justify-center"
-          pageClassName="w-10 h-10 border border-red-500 flex items-center justify-center rounded-full"
-          previousClassName="w-10 h-10 border border-red-500 flex items-center justify-center rounded-full"
-          nextClassName="w-10 h-10 border border-red-500 flex items-center justify-center rounded-full"
-          activeClassName="bg-red-500 text-white"
-        />
+    <div>
+      {products.length === 0 ? (
+        <p className="text-center text-gray-500">No products found</p>
+      ) : (
+        <>
+          <div className="grid grid-cols-3 gap-4">
+            {currentItems.map((product, index) => (
+              <Products key={index} id={index} product={product} />
+            ))}
+          </div>
+
+          {/* Pagination controls */}
+          <div className="mt-4 flex justify-center gap-2">
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i}
+                className={`px-2 py-1 border ${currentPage === i + 1 ? "bg-gray-200" : ""}`}
+                onClick={() => setCurrentPage(i + 1)}
+              >
+                {i + 1}
+              </button>
+            ))}
+          </div>
+        </>
       )}
-    </>
+    </div>
   );
 };
 

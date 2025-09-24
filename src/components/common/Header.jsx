@@ -56,7 +56,10 @@ const Header = () => {
    getCategory()
  },[])
 
-
+const handSubCategoryProduct = (sub) => {
+  // Navigate to shop with subcategory id in query
+  router.push(`/shop?subcategory=${sub._id}`);
+};
   // ✅ Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -97,7 +100,7 @@ setSearchProduct(res.data.data)
   console.log(err)
 })
 }
-console.log(searchProduct)
+
 
 
   return (
@@ -250,13 +253,14 @@ console.log(searchProduct)
 
         {/* Subcategories */}
         {category?.subcategory && (
-          <ul className="absolute left-full top-0 mt-0 ml-0 w-48 bg-white border border-gray-200 shadow-lg opacity-0 group-hover:opacity-100 group-hover:block hidden group-hover:flex flex-col z-20">
+          <ul className="absolute left-full top-0 mt-0 ml-0 w-48 bg-white border border-gray-200  shadow-lg opacity-0 group-hover:opacity-100 group-hover:block hidden group-hover:flex flex-col z-20">
             {category.subcategory.map((sub, subIdx) => (
-              <li
-                key={subIdx}
-                className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+              
+              <li onClick={()=>handSubCategoryProduct(sub)}
+                key={subIdx} 
+                className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer z-100 "
               >
-                {sub.name}
+            {sub.name}
               </li>
             ))}
           </ul>

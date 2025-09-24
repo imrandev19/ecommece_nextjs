@@ -29,7 +29,6 @@ const Categories = () => {
  useEffect(()=>{
    getCategory()
  },[])
- console.log(category)
 
   return (
     <div className="relative">
