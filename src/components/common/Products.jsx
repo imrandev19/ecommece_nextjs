@@ -1,32 +1,48 @@
-import React from 'react'
+import React from "react";
 import { GrFavorite } from "react-icons/gr";
 import { CiShoppingCart } from "react-icons/ci";
 import { FiEye } from "react-icons/fi";
-import Image from 'next/image';
-import { FaStar } from "react-icons/fa";    
-import { useDispatch } from 'react-redux';
+import Image from "next/image";
+import { FaStar } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
-import { selectedSingleProduct , selectProductforAdd } from '@/lib/productSlice';
+import { selectedSingleProduct, addToCart } from "@/lib/productSlice";
 
 const Products = ({ product, id }) => {
   const router = useRouter();
   const dispatch = useDispatch();
-
- const handleEye = (product) => {
-  dispatch(selectedSingleProduct(product));  // ✅ send product to viewProduct
-  localStorage.setItem("selectedProduct", JSON.stringify(product));
-  router.push(`/shop/${product?.slug}`);
-};
+  const cart = useSelector((state) => state.product.cart || []);
+  const handleEye = (product) => {
+    dispatch(selectedSingleProduct(product)); // ✅ send product to viewProduct
+    localStorage.setItem("selectedProduct", JSON.stringify(product));
+    router.push(`/shop/${product?.slug}`);
+  };
 
   const handleAddToCart = (product) => {
-    dispatch(selectProductforAdd(product));
-    console.log(product)
+    dispatch(addToCart(product));
+    let updatedCart = [...cart];
+    const index = updatedCart.findIndex((item) => item._id === product._id);
+
+    if (index >= 0) {
+      // Clone object before modifying
+      const updatedItem = {
+        ...updatedCart[index],
+        quantity: updatedCart[index].quantity + 1,
+      };
+      updatedCart[index] = updatedItem;
+    } else {
+      // New product → add with quantity 1
+      updatedCart.push({ ...product, quantity: 1 });
+    }
+
+    // Save in localStorage
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
   };
 
   return (
     <div
       key={id}
-      className="p-4 border-1 border-[#E4E7E9] group relative overflow-hidden"
+      className="p-4 border-1  border-[#E4E7E9] group relative overflow-hidden"
     >
       <div className="flex gap-2 absolute bottom-[-70px] group-hover:bottom-2/4 translate-[-50%] left-2/4 transition-all duration-300">
         <div className="z-100 p-3 bg-white rounded-full cursor-pointer hover:bg-[#FA8232] hover:text-white">
@@ -49,14 +65,15 @@ const Products = ({ product, id }) => {
           <FiEye className="w-[24px] h-[24px] text-[#191C1F] hover:text-white" />
         </div>
       </div>
-
-      <Image
-        src={product?.thumbnail || product.image}
-        alt={product.title}
-        width={202}
-        height={172}
-        className="mb-6 w-[202px] h-[172px] object-contain"
-      />
+      <div className="text-center">
+        <Image
+          src={product?.thumbnail || product.image}
+          alt={product.title}
+          width={202}
+          height={172}
+          className="mb-6 w-[202px] h-[172px] object-contain"
+        />
+      </div>
 
       <div className="flex gap-1 items-start">
         <ul className="flex gap-1">

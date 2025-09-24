@@ -5,8 +5,9 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Container from "./common/Container";
 import { useDispatch, useSelector } from "react-redux";
-import { selectedProduct, selectProductforAdd } from "@/lib/productSlice";
+import { selectedProduct, addToCart } from "@/lib/productSlice";
 import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast"; // ✅ for notifications
 
 const ProductDetails = ({ details }) => {
   const currentUser = useSelector((state) => state.auth?.currentUser);
@@ -15,7 +16,7 @@ const ProductDetails = ({ details }) => {
 
   const variants = details?.variants || details?.variant || [];
 
-  // ✅ unique color & storage lists
+  // ✅ unique lists
   const colors = [...new Set(variants.map((v) => v.color).filter(Boolean))];
   const storages = [...new Set(variants.map((v) => v.storage).filter(Boolean))];
 
@@ -23,8 +24,9 @@ const ProductDetails = ({ details }) => {
   const [selectedColor, setSelectedColor] = useState(colors[0] || "");
   const [selectedStorage, setSelectedStorage] = useState(storages[0] || "");
   const [selectedVariant, setSelectedVariant] = useState(null);
+  const [quantity, setQuantity] = useState(1);
 
-  // ✅ whenever color/storage changes → find matching variant
+  // ✅ update variant when selection changes
   useEffect(() => {
     if (variants.length > 0) {
       const match = variants.find(
@@ -36,6 +38,7 @@ const ProductDetails = ({ details }) => {
     }
   }, [selectedColor, selectedStorage, variants]);
 
+  // ✅ load product from localStorage for safety
   useEffect(() => {
     const savedProduct = localStorage.getItem("selectedProduct");
     if (savedProduct) {
@@ -43,18 +46,33 @@ const ProductDetails = ({ details }) => {
     }
   }, [dispatch]);
 
+  // ✅ add to cart
+  const handleAddtoCart = () => {
+    if (!currentUser?.id) {
+      alert("Please login first");
+      return;
+    }
 
-const handleAddtoCart = (product) => {
-  if (!currentUser?.id) {
-    alert("Please login first");
-    return;
-  }
+    dispatch(
+      addToCart({
+        _id: details._id,
+        title: details.title,
+        price: selectedVariant?.price || details.price,
+        thumbnail: details.thumbnail,
+        userId: currentUser.id,
+        quantity,
+      })
+    );
 
-  dispatch(selectProductforAdd({ product, userId: currentUser.id }));
+    toast.success(`${details.title} added to cart`);
+  };
 
-  // ✅ optional: navigate to cart page
-  router.push("/cart");
-};
+  // ✅ buy now → add + go to checkout
+  const handleBuyNow = () => {
+    handleAddtoCart();
+    router.push("/checkout");
+  };
+
   return (
     <Container>
       <div className="container mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -86,7 +104,7 @@ const handleAddtoCart = (product) => {
             </span>
           </p>
 
-          {/* ✅ Price updates when variant changes */}
+          {/* ✅ Price */}
           <div className="flex items-center gap-3 mb-4">
             <span className="text-3xl font-bold text-orange-600">
               ${selectedVariant?.price || details?.price}
@@ -139,15 +157,35 @@ const handleAddtoCart = (product) => {
             </div>
           )}
 
+          {/* ✅ Quantity selector */}
+          <div className="flex items-center gap-4 mb-6">
+            <button
+              onClick={() => setQuantity(Math.max(1, quantity - 1))}
+              className="px-3 py-1 border rounded-lg text-lg"
+            >
+              -
+            </button>
+            <span className="text-lg font-semibold">{quantity}</span>
+            <button
+              onClick={() => setQuantity(quantity + 1)}
+              className="px-3 py-1 border rounded-lg text-lg"
+            >
+              +
+            </button>
+          </div>
+
           {/* Action Buttons */}
           <div className="flex gap-3">
             <Button
-              onClick={() => handleAddtoCart(details)}
-              className="bg-orange-500 hover:bg-orange-600 hover:cursor-pointer text-white px-6 py-10 text-4xl rounded-xl"
+              onClick={handleAddtoCart}
+              className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-xl"
             >
               Add to Cart
             </Button>
-            <Button className="bg-black hover:bg-gray-800 text-white hover:cursor-pointer px-6 py-10 text-4xl rounded-xl">
+            <Button
+              onClick={handleBuyNow}
+              className="bg-black hover:bg-gray-800 text-white px-6 py-3 rounded-xl"
+            >
               Buy Now
             </Button>
           </div>

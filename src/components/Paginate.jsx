@@ -2,23 +2,33 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Products from "./common/Products";
+import { useSearchParams } from "next/navigation";
 
-const Paginate = ({ itemsPerPage, filters }) => {
+const Paginate = ({ itemsPerPage }) => {
+  const searchParams = useSearchParams();
+
+  // ✅ Get category and other filters from URL
+  const category = searchParams.get("category") || "";
+  const subcategory = searchParams.get("subcategory") || "";
+  const brand = searchParams.get("brand") || "";
+  const minPrice = searchParams.get("minPrice") || "";
+  const maxPrice = searchParams.get("maxPrice") || "";
+  const popular = searchParams.get("popular") || "";
+
   const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
 
   const fetchProducts = async () => {
     try {
-      let url = `${process.env.NEXT_PUBLIC_API_URL}/api/product/getallproducts`;
-
-      // Append query parameters based on filters
+      const url = `${process.env.NEXT_PUBLIC_API_URL}/api/product/getallproducts`;
       const query = new URLSearchParams();
-      if (filters?.category) query.append("category", filters.category);
-      if (filters?.subcategory) query.append("subcategory", filters.subcategory);
-      if (filters?.brand) query.append("brand", filters.brand);
-      if (filters?.minPrice) query.append("minPrice", filters.minPrice);
-      if (filters?.maxPrice) query.append("maxPrice", filters.maxPrice);
-      if (filters?.popular) query.append("popular", true);
+
+      if (category) query.append("category", category);
+      if (subcategory) query.append("subcategory", subcategory);
+      if (brand) query.append("brand", brand);
+      if (minPrice) query.append("minPrice", minPrice);
+      if (maxPrice) query.append("maxPrice", maxPrice);
+      if (popular) query.append("popular", popular);
 
       const res = await axios.get(`${url}?${query.toString()}`);
       setProducts(res.data.data || []);
@@ -28,9 +38,10 @@ const Paginate = ({ itemsPerPage, filters }) => {
     }
   };
 
+  // ✅ Re-fetch products whenever any filter changes
   useEffect(() => {
     fetchProducts();
-  }, [filters]);
+  }, [category, subcategory, brand, minPrice, maxPrice, popular]);
 
   // Pagination logic
   const startIndex = (currentPage - 1) * itemsPerPage;

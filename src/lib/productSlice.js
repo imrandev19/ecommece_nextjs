@@ -7,72 +7,67 @@ const initialState = {
   cart: [],
 };
 
-// ✅ helper to load cart for specific user
-const loadCart = (userId) => {
-  if (typeof window !== "undefined" && userId) {
-    const saved = localStorage.getItem("cart_" + userId);
-    return saved ? JSON.parse(saved) : [];
-  }
-  return [];
-};
-
 export const productSlice = createSlice({
   name: "product",
   initialState,
   reducers: {
+    // ✅ Set current product id (if needed)
     selectedProduct: (state, action) => {
       state.currentProduct = action.payload;
     },
+
+    // ✅ Save product for single view page
     selectedSingleProduct: (state, action) => {
       state.viewProduct = action.payload;
     },
 
-    // ✅ add product to user-specific cart
-    selectProductforAdd: (state, action) => {
-      const { product, userId } = action.payload;
-      if (!userId) return;
+    // ✅ Add to cart (with quantity + merge if already exists)
+    addToCart: (state, action) => {
+      const item = action.payload;
+      const existing = state.cart.find((p) => p._id === item._id);
 
-      const existingIndex = state.cart.findIndex(
-        (item) => item._id === product._id
-      );
-
-      if (existingIndex >= 0) {
-        state.cart[existingIndex].quantity =
-          (state.cart[existingIndex].quantity || 1) + 1;
+      if (existing) {
+        existing.quantity += item.quantity || 1;
       } else {
-        state.cart.push({ ...product, quantity: 1 });
+        state.cart.push({ ...item, quantity: item.quantity || 1 });
       }
 
-      localStorage.setItem("cart_" + userId, JSON.stringify(state.cart));
+      // persist cart per user
+      if (item.userId) {
+        localStorage.setItem("cart_" + item.userId, JSON.stringify(state.cart));
+      }
     },
 
-    // ✅ remove product from user-specific cart
+    // ✅ Remove item from cart
     removeFromCart: (state, action) => {
       const { _id, userId } = action.payload;
-      if (!userId) return;
-
       state.cart = state.cart.filter((item) => item._id !== _id);
-      localStorage.setItem("cart_" + userId, JSON.stringify(state.cart));
+
+      if (userId) {
+        localStorage.setItem("cart_" + userId, JSON.stringify(state.cart));
+      }
     },
 
-    // ✅ set cart for current user
+    // ✅ Initialize cart (from localStorage or API)
     setCart: (state, action) => {
       state.cart = action.payload;
     },
 
-    // ✅ clear user cart
+    // ✅ Clear cart (useful after checkout)
     clearCart: (state, action) => {
-      const userId = action.payload;
       state.cart = [];
-      localStorage.setItem("cart_" + userId, JSON.stringify([]));
+      if (action.payload?.userId) {
+        localStorage.removeItem("cart_" + action.payload.userId);
+      }
     },
   },
 });
 
+// ✅ Export actions
 export const {
   selectedProduct,
   selectedSingleProduct,
-  selectProductforAdd,
+  addToCart,
   removeFromCart,
   setCart,
   clearCart,

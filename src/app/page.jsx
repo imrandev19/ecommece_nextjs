@@ -6,7 +6,7 @@ import FeaturedProduct from '@/components/FeaturedProduct'
 import Features from '@/components/Features'
 import Introducing from '@/components/Introducing'
 import Subscribe from '@/components/Subscribe'
-import CheckState from '@/components/CheckState'
+
 
 
 
@@ -17,7 +17,7 @@ const page = () => {
 
     <Banner/>
     <Features/>
-    <CheckState/>
+   
     <Categories/>
     <FeaturedProduct/>
     <Introducing/>

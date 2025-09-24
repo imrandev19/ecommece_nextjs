@@ -8,11 +8,12 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import axios from "axios";
 import Link from 'next/link'
 const Categories = () => {
-
+const router = useRouter();
   const [category, setCategory] = useState([])
     
   function getCategory(){
@@ -29,6 +30,10 @@ const Categories = () => {
  useEffect(()=>{
    getCategory()
  },[])
+   const goToCategory = (slug) => {
+    // Navigate to shop page with category slug
+    router.push(`/shop?category=${slug}`);
+  };
 
   return (
     <div className="relative">
@@ -40,8 +45,8 @@ const Categories = () => {
           <Carousel>
             <CarouselContent>
               {category.map((item, index, slug)=>(
-                <CarouselItem key={index}  className="md:basis-1/2 lg:basis-1/6">
-                <div  className="w-[205px] h-[236px] border-1 rounded-[6px] py-6 px-3 flex flex-col justify-center items-center">
+                <CarouselItem  key={index}  className="md:basis-1/2 lg:basis-1/6">
+                <div  onClick={() => goToCategory(item._id)}  className="w-[205px] hover:cursor-pointer h-[236px] border-1 rounded-[6px] py-6 px-3 flex flex-col justify-center items-center">
                     <Image className="mb-4 !object-fit-contain"  src={item.image} alt="Apple Laptop Image" width={148} height={148} />
                     <h3 className="font-medium text-[16px] leading-6">
                       <Link href={`/category/${item.slug}`}>{item.categoryName}</Link>

@@ -2,151 +2,138 @@
 
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
 import axios from "axios";
-import Container from "@/components/common/Container";
-import Breadcrumb from "@/components/common/Breadcrumb";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
-export default function OrdersPage() {
+const OrdersPage = () => {
   const currentUser = useSelector((state) => state.auth?.currentUser);
   const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
-  const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
-  const [selectedOrder, setSelectedOrder] = useState(null);
-
-  // ✅ Fetch orders
+  // ✅ Fetch orders for logged in user
   useEffect(() => {
-    if (!currentUser?.id) return;
-    axios
-      .get(`http://localhost:4000/api/orders/${currentUser.id}`)
-      .then((res) => {
-        if (res.data.success) setOrders(res.data.orders);
-      })
-      .finally(() => setLoading(false));
+    const fetchOrders = async () => {
+      if (!currentUser?.id) return;
+      try {
+        const res = await axios.get(
+          `http://localhost:4000/api/orders/user/${currentUser.id}`
+        );
+        setOrders(res.data.orders || []);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchOrders();
   }, [currentUser]);
 
-  // ✅ Cancel order
-  const handleCancelOrder = async () => {
-    if (!selectedOrder) return;
+  // ✅ Cancel Order
+  const handleCancelOrder = async (orderId) => {
     try {
-      await axios.delete(`http://localhost:4000/api/orders/${selectedOrder._id}`);
-      setOrders(orders.filter((o) => o._id !== selectedOrder._id));
-      setCancelDialogOpen(false);
+      await axios.delete(`http://localhost:4000/api/orders/${orderId}`);
+      setOrders((prev) => prev.filter((o) => o._id !== orderId));
     } catch (err) {
+      console.error(err);
       alert("Failed to cancel order");
     }
   };
 
-  if (!currentUser)
+  if (!currentUser) {
     return (
-      <Container>
-        <p className="text-gray-500 mt-10">Please login to see your orders.</p>
-      </Container>
+      <div className="flex flex-col items-center justify-center h-64">
+        <p className="text-gray-500">Please login to see your orders.</p>
+      </div>
     );
+  }
 
-  if (loading)
+  if (orders.length === 0) {
     return (
-      <Container>
-        <p className="text-gray-500 mt-10">Loading orders...</p>
-      </Container>
+      <div className="flex flex-col items-center justify-center h-64">
+        <p className="text-gray-500 text-lg font-medium">No orders found.</p>
+        <Button onClick={() => router.push("/shop")}>Shop Now</Button>
+      </div>
     );
+  }
 
   return (
-    <main className="py-10">
-      <Container>
-        <Breadcrumb />
-        <h2 className="text-2xl font-bold mb-6">My Orders</h2>
+    <main className="py-10 max-w-3xl mx-auto">
+      <h2 className="text-2xl font-bold mb-6">My Orders</h2>
 
-        {orders.length === 0 ? (
-          <p className="text-gray-500">No orders yet.</p>
-        ) : (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {orders.map((order) => (
-              <Card key={order._id} className="shadow-md">
-                <CardHeader>
-                  <CardTitle className="text-lg">
-                    Order #{order._id.slice(-6)}
-                  </CardTitle>
-                  <p className="text-sm text-gray-500">
-                    {new Date(order.createdAt).toLocaleDateString()}
-                  </p>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2">
-                    {order.products.map((item, idx) => (
-                      <li key={idx} className="flex justify-between text-sm">
-                        <span>
-                          {item.title} × {item.quantity}
-                        </span>
-                        <span>${item.price * item.quantity}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <div className="mt-3 font-semibold">
-                    Total: ${order.totalPrice}
-                  </div>
-                  <div className="text-sm text-gray-500">
-                    Payment: {order.paymentMethod.toUpperCase()}
-                  </div>
-                </CardContent>
-                <CardFooter className="flex justify-between">
-                  <span
-                    className={`px-3 py-1 rounded-full text-xs ${
-                      order.status === "confirmed"
-                        ? "bg-green-100 text-green-700"
-                        : "bg-gray-200 text-gray-700"
-                    }`}
-                  >
-                    {order.status}
-                  </span>
-                  <Button
-                    variant="destructive"
-                    onClick={() => {
-                      setSelectedOrder(order);
-                      setCancelDialogOpen(true);
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                </CardFooter>
-              </Card>
-            ))}
+      <div className="space-y-6">
+        {orders.map((order) => (
+          <div
+            key={order._id}
+            className="border rounded-lg p-4 shadow-sm bg-white"
+          >
+            <div className="flex justify-between items-center mb-2">
+              <h3 className="font-semibold">Order #{order._id}</h3>
+              <span
+                className={`px-2 py-1 text-xs rounded ${
+                  order.status === "pending"
+                    ? "bg-yellow-100 text-yellow-700"
+                    : "bg-green-100 text-green-700"
+                }`}
+              >
+                {order.status}
+              </span>
+            </div>
+
+            <ul className="text-sm text-gray-600 mb-3 space-y-1">
+              {order.products.map((p, idx) => (
+                <li key={idx}>
+                  {p.title} × {p.quantity} — ${p.price}
+                </li>
+              ))}
+            </ul>
+
+            <p className="font-medium text-gray-800 mb-3">
+              Total: ${order.totalPrice}
+            </p>
+
+{order.status !== "shipped" && (
+  <AlertDialog>
+    <AlertDialogTrigger asChild>
+      <Button variant="destructive" size="sm">
+        Cancel Order
+      </Button>
+    </AlertDialogTrigger>
+    <AlertDialogContent>
+      <AlertDialogHeader>
+        <AlertDialogTitle>
+          Are you sure you want to cancel this order?
+        </AlertDialogTitle>
+        <AlertDialogDescription>
+          This action cannot be undone. Stock will be restored to inventory.
+        </AlertDialogDescription>
+      </AlertDialogHeader>
+      <AlertDialogFooter>
+        <AlertDialogCancel>Keep Order</AlertDialogCancel>
+        <AlertDialogAction onClick={() => handleCancelOrder(order._id)}>
+          Yes, Cancel
+        </AlertDialogAction>
+      </AlertDialogFooter>
+    </AlertDialogContent>
+  </AlertDialog>
+)}
+
+
+
           </div>
-        )}
-      </Container>
-
-      {/* ✅ Cancel confirmation dialog */}
-      <Dialog open={cancelDialogOpen} onOpenChange={setCancelDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Cancel Order</DialogTitle>
-          </DialogHeader>
-          <p>Are you sure you want to cancel this order?</p>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setCancelDialogOpen(false)}>
-              No
-            </Button>
-            <Button variant="destructive" onClick={handleCancelOrder}>
-              Yes, Cancel
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        ))}
+      </div>
     </main>
   );
-}
+};
+
+export default OrdersPage;

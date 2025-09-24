@@ -27,39 +27,53 @@ import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import toast, { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from "react-hot-toast";
 import { currentUserInfo } from "@/lib/authSlice";
+import { setCart } from "@/lib/productSlice";
 const Header = () => {
-  const [searchProduct, setSearchProduct] = useState([])
-  const dispatch = useDispatch()
-  const user = useSelector((state)=>state.auth.currentUser)
-  
-  const router = useRouter()
-  const handleAccountIcon=()=>{
-    router.push("/login")
-  }
-  const [category, setCategory] = useState([])
+  const [searchProduct, setSearchProduct] = useState([]);
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.currentUser);
+  const cartProducts = useSelector((state) => state.product.cart);
+
+  const handleAccountIcon = () => {
+    router.push("/login");
+  };
+  const [category, setCategory] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(false); //
   const dropdownRef = useRef(null); //
-  function getCategory(){
-    axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/category/allcategories`)
-  .then(response => {
-    // Handle successful response
-    setCategory(response.data.data); // The retrieved data is in response.data
-  })
-  .catch(error => {
-    // Handle errors
-    console.error(error);
-  });
+  function getCategory() {
+    axios
+      .get(`${process.env.NEXT_PUBLIC_API_URL}/api/category/allcategories`)
+      .then((response) => {
+        // Handle successful response
+        setCategory(response.data.data); // The retrieved data is in response.data
+      })
+      .catch((error) => {
+        // Handle errors
+        console.error(error);
+      });
   }
- useEffect(()=>{
-   getCategory()
- },[])
+  useEffect(() => {
+    getCategory();
+  }, []);
+useEffect(() => {
+  if (user?.id) {
+    const savedCart = localStorage.getItem("cart_" + user.id);
+    if (savedCart) {
+      dispatch(setCart(JSON.parse(savedCart)));
+    } else {
+      dispatch(setCart([])); // empty cart if nothing saved
+    }
+  } else {
+    dispatch(setCart([])); // clear cart if logged out
+  }
+}, [user, dispatch]);
 
-const handSubCategoryProduct = (sub) => {
-  // Navigate to shop with subcategory id in query
-  router.push(`/shop?subcategory=${sub._id}`);
-};
+  const handSubCategoryProduct = (sub) => {
+    // Navigate to shop with subcategory id in query
+    router.push(`/shop?subcategory=${sub._id}`);
+  };
   // ✅ Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -72,7 +86,7 @@ const handSubCategoryProduct = (sub) => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-    
+
   const [open, setOpen] = useState("true");
   const [isSticky, setIsSticky] = useState(false);
   useEffect(() => {
@@ -84,24 +98,31 @@ const handSubCategoryProduct = (sub) => {
       []
     );
   });
-  const [logoutBtn, setLogoutBtn] = useState(false)
-  const handleLogOut=()=>{
-     axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`)
-     dispatch(currentUserInfo(null));   
-               localStorage.setItem('currentUser', null) 
-     toast.success('Logout Successfully')
-}
-const handleSearch =(e)=>{
-e.preventDefault();
-const search = e.target.value
-axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/product/search-product?search=${search}`).then((res)=>{
-setSearchProduct(res.data.data)
-}).catch((err)=>{
-  console.log(err)
-})
-}
-
-
+  const [logoutBtn, setLogoutBtn] = useState(false);
+  const handleLogOut = () => {
+    axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`);
+    dispatch(currentUserInfo(null));
+    localStorage.setItem("currentUser", null);
+    toast.success("Logout Successfully");
+  };
+  const handleSearch = (e) => {
+    e.preventDefault();
+    const search = e.target.value;
+    axios
+      .get(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/product/search-product?search=${search}`
+      )
+      .then((res) => {
+        setSearchProduct(res.data.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  const router = useRouter();
+  const handleCartIcon = () => {
+    router.push("/cart");
+  };
 
   return (
     <header className={`${isSticky && "fixed w-full z-100"}`}>
@@ -142,10 +163,7 @@ setSearchProduct(res.data.data)
         <div className="header_welcome py-4 relative after:content-[''] after:w-full after:h-[.1px] after:bg-[#E4E7E9] after:absolute after:mt-4 ">
           <Container>
             <div className="flex items-center justify-between">
-              <Toaster
-  position="top-center"
-  reverseOrder={false}
-/>
+              <Toaster position="top-center" reverseOrder={false} />
               <h3 className="text-[#FFFFFF] text-sm leading-5 font-normal">
                 Welcome to Clicon online eCommerce store.{" "}
               </h3>
@@ -166,62 +184,80 @@ setSearchProduct(res.data.data)
         <Container>
           <div className="flex items-center justify-between py-5">
             <Link href={"/"}>
-            <Image
-              src="/images/Logo.png"
-              alt="Clicon Logo"
-              width={177}
-              height={48}
-            />
+              <Image
+                src="/images/Logo.png"
+                alt="Clicon Logo"
+                width={177}
+                height={48}
+              />
             </Link>
             <div className="w-[646px] flex items-center relative h-[48px] ">
-              <Input onChange={handleSearch}
+              <Input
+                onChange={handleSearch}
                 className="bg-white placeholder:text-[#77878F] h-full"
                 type="search"
                 placeholder="Search for anything..."
               />
-              <CiSearch  className="text-[#191C1F] w-5 h-5 absolute  right-[14px] flex items-center" />
+              <CiSearch className="text-[#191C1F] w-5 h-5 absolute  right-[14px] flex items-center" />
               <div className="absolute w-full top-12 left-0 z-100 shadow-lg">
-              {searchProduct.length>0 && 
-              <div>
-                  {searchProduct.map((product)=>(
-                    <div className="p-4 bg-white flex gap-3">
-                      <Image
-                src={product.thumbnail}
-                width={50}
-                height={43}
-                alt="search image"
-                />
-                <div>
-                   <h3>{product.title}</h3>
-                <p>{product.description}</p>
-                </div>
-               
-                    </div>
-                  ))}
-              </div>
-              }
-
+                {searchProduct.length > 0 && (
+                  <div>
+                    {searchProduct.map((product) => (
+                      <div className="p-4 bg-white flex gap-3">
+                        <Image
+                          src={product.thumbnail}
+                          width={50}
+                          height={43}
+                          alt="search image"
+                        />
+                        <div>
+                          <h3>{product.title}</h3>
+                          <p>{product.description}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
             <div className="gap-6 flex items-center">
               <div className="relative ">
-                <CiShoppingCart className="w-8 h-8 text-white" />
-                <span className="absolute font-semibold text-[12px] leading-4 text-[#1B6392] bg-white rounded-full py-1 px-2 top-[-4px] left-[16px]">
-                  2
-                </span>
+                <CiShoppingCart
+                  onClick={handleCartIcon}
+                  className="w-8 h-8 text-white hover:cursor-pointer"
+                />
+                {user && cartProducts.length > 0 && (
+        <span className="absolute font-semibold text-[12px] leading-4 text-[#1B6392] bg-white rounded-full py-1 px-2 top-[-4px] left-[16px]">
+          {cartProducts.length}
+        </span>
+      )}
               </div>
               <GrFavorite className="w-8 h-8 text-white" />
               <div>
-                {user? 
-                <div className="relative">
-                  <p onClick={()=>setLogoutBtn(!logoutBtn)} className="text-white hover:cursor-pointer">{user.username}</p>
-                  {logoutBtn && <button onClick={handleLogOut}  className="text-white absolute top-8 hover:bg-amber-500 hover:cursor-pointer rounded-xl right-0 bg-red-500 px-5 py-3 flex items-center z-100">Logout</button> }
-                </div>:  
-                <LuUserRound onClick={handleAccountIcon} className="w-8 h-8 text-white hover:cursor-pointer" />}
-               
-                
+                {user ? (
+                  <div className="relative">
+                    <p
+                      onClick={() => setLogoutBtn(!logoutBtn)}
+                      className="text-white hover:cursor-pointer"
+                    >
+                      {user.username}
+                    </p>
+                    {logoutBtn && (
+                      <button
+                        onClick={handleLogOut}
+                        className="text-white absolute top-8 hover:bg-amber-500 hover:cursor-pointer rounded-xl right-0 bg-red-500 px-5 py-3 flex items-center z-100"
+                      >
+                        Logout
+                      </button>
+                    )}
+                  </div>
+                ) : (
+                  <LuUserRound
+                    onClick={handleAccountIcon}
+                    className="w-8 h-8 text-white hover:cursor-pointer"
+                  />
+                )}
               </div>
-              
             </div>
           </div>
         </Container>
@@ -241,34 +277,34 @@ setSearchProduct(res.data.data)
                 </div>
                 {/* ✅ Dropdown list */}
                 {dropdownOpen && (
-  <ul className="absolute left-0 top-full mt-2 w-60 bg-white shadow-lg border border-gray-200 z-10 rounded-md ">
-    {category.map((category, idx) => (
-      <li key={idx} className="group relative">
-        <div className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer flex justify-between items-center active:bg-[#EBC80C] active:text-white">
-          {category.categoryName}
-          {category.subcategory.length>0 && (
-            <IoIosArrowDropright className="ml-2 w-3 h-3" />
-          )}
-        </div>
+                  <ul className="absolute left-0 top-full mt-2 w-60 bg-white shadow-lg border border-gray-200 z-10 rounded-md ">
+                    {category.map((category, idx) => (
+                      <li key={idx} className="group relative">
+                        <div className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer flex justify-between items-center active:bg-[#EBC80C] active:text-white">
+                          {category.categoryName}
+                          {category.subcategory.length > 0 && (
+                            <IoIosArrowDropright className="ml-2 w-3 h-3" />
+                          )}
+                        </div>
 
-        {/* Subcategories */}
-        {category?.subcategory && (
-          <ul className="absolute left-full top-0 mt-0 ml-0 w-48 bg-white border border-gray-200  shadow-lg opacity-0 group-hover:opacity-100 group-hover:block hidden group-hover:flex flex-col z-20">
-            {category.subcategory.map((sub, subIdx) => (
-              
-              <li onClick={()=>handSubCategoryProduct(sub)}
-                key={subIdx} 
-                className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer z-100 "
-              >
-            {sub.name}
-              </li>
-            ))}
-          </ul>
-        )}
-      </li>
-    ))}
-  </ul>
-)}
+                        {/* Subcategories */}
+                        {category?.subcategory && (
+                          <ul className="absolute left-full top-0 mt-0 ml-0 w-48 bg-white border border-gray-200  shadow-lg opacity-0 group-hover:opacity-100 group-hover:block hidden group-hover:flex flex-col z-20">
+                            {category.subcategory.map((sub, subIdx) => (
+                              <li
+                                onClick={() => handSubCategoryProduct(sub)}
+                                key={subIdx}
+                                className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer z-100 "
+                              >
+                                {sub.name}
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </li>
               <li className="flex items-center py-[14px] px-6 gap-[6px]  text-[#5F6C72] cursor-pointer  hover:bg-[#F2F4F5] hover:text-[#191C1F]">
                 <CiLocationOn className="w-6 h-4" />

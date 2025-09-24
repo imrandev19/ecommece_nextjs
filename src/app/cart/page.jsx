@@ -1,144 +1,154 @@
 "use client";
-
-import Breadcrumb from "@/components/common/Breadcrumb";
-import Container from "@/components/common/Container";
-import { removeFromCart, setCart } from "@/lib/productSlice";
+import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { Button } from "@/components/ui/button";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
-const Page = () => {
-  const router = useRouter();
+import { setCart } from "@/lib/productSlice";
+import { toast, ToastContainer } from "react-toastify";
+
+const CartPage = () => {
   const dispatch = useDispatch();
-  const [paymentMethod, setPaymentMethod] = useState("cod"); // default payment method
+  const router = useRouter();
 
-  // ✅ Get cart & current user
-  const cartProducts = useSelector((state) => state.product.cart);
-  const currentUser = useSelector((state) => state.auth?.currentUser);
+  const cart = useSelector((state) => state.product.cart || []);
+  const reduxUser = useSelector((state) => state.auth.currentUser);
+  const user =
+    reduxUser || (typeof window !== "undefined" && JSON.parse(localStorage.getItem("currentUser")));
 
-  // ✅ Load cart for current user from localStorage on mount
-  useEffect(() => {
-    if (currentUser?.id) {
-      const savedCart = localStorage.getItem("cart_" + currentUser.id);
-      if (savedCart) {
-        dispatch(setCart(JSON.parse(savedCart)));
-      }
+  const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const [paymentMethod, setPaymentMethod] = useState("cod");
+  const [loading, setLoading] = useState(false);
+
+  const handleProceedCheckout = async () => {
+    if (!user) {
+      router.push("/login");
+      return;
     }
-  }, [currentUser, dispatch]);
 
-  // ✅ Remove product from cart
-  const handleRemoveCart = (product) => {
-    if (!currentUser?.id) return alert("Please login first");
-    dispatch(removeFromCart({ _id: product._id, userId: currentUser.id }));
-  };
+    if (cart.length === 0) {
+      toast.warning("Your cart is empty!");
+      return;
+    }
 
-  // ✅ Calculate total price
-  const totalPrice = cartProducts.reduce(
-    (sum, item) => sum + (item.price || 0) * (item.quantity || 1),
-    0
-  );
-  
-const handleCheckout = async () => {
-  if (!currentUser?.id) return alert("Please login first");
-
-  try {
+    const orderId = "ORDER-" + Date.now(); // unique tran_id
     const orderData = {
-      userId: currentUser.id,
-      products: cartProducts.map((p) => ({
+      tran_id: orderId, // pass this to backend
+      userId: user.id,
+      products: cart.map((p) => ({
         productId: p._id,
         title: p.title,
         price: p.price,
-        quantity: p.quantity || 1,
+        quantity: p.quantity,
       })),
       totalPrice,
       paymentMethod,
+      status: paymentMethod === "cod" ? "confirmed" : "pending",
     };
 
-    const res = await axios.post("http://localhost:4000/api/orders", orderData);
+    try {
+      setLoading(true);
 
-    if (res.data.success) {
-      alert("✅ Order confirmed successfully!");
-      router.push("/orders");
-      // ✅ Clear cart after order
-      localStorage.removeItem("cart_" + currentUser.id);
-      dispatch(setCart([]));
-    } else {
-      alert("❌ Order failed. Try again.");
+      // Save order in DB
+      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/orders`, orderData);
+
+      if (paymentMethod === "cod") {
+        // ✅ COD: just show success
+        toast.success("Order placed successfully!");
+        dispatch(setCart([]));
+        localStorage.removeItem("cart_" + user._id);
+        router.push("/orders");
+      } else if (paymentMethod === "online") {
+        // ✅ Online payment: initiate SSLCommerz
+        const res = await axios.post(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/payment/initiate-payment`,
+          {
+            totalAmount: totalPrice,
+            orderId,
+            customerEmail: user.email,
+            customerPhone: user.phone || "01711111111",
+          }
+        );
+
+        if (res.data.redirectUrl) {
+          window.location.href = res.data.redirectUrl; // redirect to SSL gateway
+        } else {
+          toast.error("Failed to start payment. Please try again.");
+        }
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Checkout failed. Please try again.");
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    console.error(error);
-    alert("Something went wrong while placing order.");
-  }
-};
+  };
 
   return (
-    <main className="py-10">
-      <Container>
-        <Breadcrumb />
-        <h2 className="text-2xl font-bold mb-4">Your Cart</h2>
+    <div className="container mx-auto px-4 py-8">
+      <ToastContainer position="top-right" autoClose={3000} />
 
-        {!currentUser ? (
-          <p className="text-gray-500">Please login to see your cart.</p>
-        ) : cartProducts.length === 0 ? (
-          <p className="text-gray-500">Your cart is empty.</p>
-        ) : (
-          <div className="space-y-6">
-            {/* Cart items */}
-            <div className="space-y-4">
-              {cartProducts.map((product) => (
-                <div
-                  key={product._id}
-                  className="flex items-center justify-between border p-4 rounded-lg"
-                >
-                  <div>
-                    <h3 className="font-semibold">{product.title}</h3>
-                    <p className="text-sm text-gray-500">
-                      ${product.price}
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      Qty: {product.quantity || 1}
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => handleRemoveCart(product)}
-                    className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
-                  >
-                    Remove
-                  </button>
+      <h1 className="text-2xl font-semibold mb-6">Your Cart</h1>
+
+      {cart.length === 0 ? (
+        <p>Your cart is empty.</p>
+      ) : (
+        <>
+          <div className="grid grid-cols-1 gap-6">
+            {cart.map((item) => (
+              <div key={item._id} className="flex items-center gap-4 border-b border-gray-200 pb-4">
+                <img
+                  src={item.thumbnail || item.image}
+                  alt={item.title}
+                  className="w-24 h-24 object-contain rounded-md"
+                />
+                <div className="flex-1">
+                  <h2 className="font-medium">{item.title}</h2>
+                  <p>${item.price}</p>
+                  <p>Quantity: {item.quantity}</p>
                 </div>
-              ))}
-            </div>
-
-            {/* Total Price */}
-            <div className="border-t pt-4">
-              <h3 className="text-lg font-semibold mb-2">Order Summary</h3>
-              <p className="text-gray-700 mb-2">
-                Total Price: <span className="font-bold">${totalPrice}</span>
-              </p>
-
-              {/* Payment method selection */}
-              <div className="mb-4">
-                <label className="block font-medium mb-1">Payment Method</label>
-                <select
-                  value={paymentMethod}
-                  onChange={(e) => setPaymentMethod(e.target.value)}
-                  className="border rounded-md px-3 py-2 w-full"
-                >
-                  <option value="cod">Cash on Delivery</option>
-                  <option value="online">Online Payment</option>
-                </select>
               </div>
+            ))}
+          </div>
 
-              {/* Checkout button */}
-              <button  onClick={handleCheckout} className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-md">
-                Proceed to Checkout
-              </button>
+          <div className="mt-6">
+            <h2 className="text-xl font-semibold mb-4">Select Payment Method</h2>
+            <div className="flex gap-4">
+              <label className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  value="cod"
+                  checked={paymentMethod === "cod"}
+                  onChange={() => setPaymentMethod("cod")}
+                />
+                Cash on Delivery
+              </label>
+              <label className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  value="online"
+                  checked={paymentMethod === "online"}
+                  onChange={() => setPaymentMethod("online")}
+                />
+                Online Payment
+              </label>
             </div>
           </div>
-        )}
-      </Container>
-    </main>
+
+          <div className="flex justify-between items-center mt-6">
+            <h2 className="text-xl font-semibold">Total: ${totalPrice}</h2>
+            <Button
+              onClick={handleProceedCheckout}
+              disabled={loading}
+              className="bg-green-500 hover:bg-green-600 text-white px-6 py-2"
+            >
+              {loading ? "Processing..." : "Proceed to Checkout"}
+            </Button>
+          </div>
+        </>
+      )}
+    </div>
   );
 };
 
-export default Page;
+export default CartPage;
