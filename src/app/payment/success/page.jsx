@@ -1,22 +1,23 @@
 "use client";
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import { clearCart } from "@/lib/productSlice";
 
-export default function SuccessPage() {
-  const router = useRouter();
+export default function PaymentSuccess() {
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.currentUser);
 
   useEffect(() => {
-    // Optional: redirect to orders after 5 seconds
-    const timer = setTimeout(() => {
-      router.push("/orders");
-    }, 5000);
-    return () => clearTimeout(timer);
-  }, []);
+    // ✅ Clear cart immediately (backend already confirmed order)
+    if (user) {
+      dispatch(clearCart({ userId: user._id }));
+    }
+  }, [dispatch, user]);
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
-      <h1 className="text-3xl font-bold text-green-600 mb-4">Payment Successful!</h1>
-      <p className="text-gray-700">Thank you for your order. You will be redirected to your orders page shortly.</p>
+    <div className="text-center py-20">
+      <h1 className="text-2xl font-bold text-green-600">🎉 Payment Successful!</h1>
+      <p>Your order has been confirmed.</p>
     </div>
   );
 }
