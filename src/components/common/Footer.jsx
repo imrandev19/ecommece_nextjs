@@ -1,8 +1,34 @@
-import React from "react";
+'use client'
+import React, { useEffect, useState } from "react";
 import Container from "./Container";
 import Image from "next/image";
+import Link from "next/link"
 import { FaArrowRightLong } from "react-icons/fa6";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 const Footer = () => {
+  const route =useRouter()
+  const [categories, setCategories] = useState([]);
+  const handleCatBtn =(category)=>{
+route.push(`/shop?category=${category._id}`)
+  }
+    // Fetch categories
+  const getCategories = async () => {
+    try {
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/category/allcategories`
+      );
+     
+      setCategories(res.data.data || []);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+    useEffect(() => {
+      getCategories();
+    }, []);
+  
+
   return (
     <div className="bg-[#191C1F] h-[472px]">
       <Container>
@@ -27,14 +53,13 @@ const Footer = () => {
           </div>
           <div className="w-[200px]">
             <h2 className="font-medium text-[16px] leading-6 uppercase text-[#FFFFFF] mb-3">Top Category</h2>
-            <ul>
-                <li className="text-sm text-[#929FA5] font-medium leading-5 mb-[6px] ">Computer & Laptop</li>
-                <li  className="text-sm text-[#929FA5] font-medium leading-5 mb-[6px] ">SmartPhone</li>
-                <li  className="text-sm text-[#929FA5] font-medium leading-5 mb-[6px] ">Headphone</li>
-                <li  className="text-sm text-[#929FA5] font-medium leading-5 mb-[6px] ">Accessories</li>
-                <li  className="text-sm text-[#929FA5] font-medium leading-5 mb-[6px] ">Camera & Photo</li>
-                <li  className="text-sm text-[#929FA5] font-medium leading-5 mb-[6px] ">TV & Homes</li>
+            <ul>{categories.map((category, index)=>(
+             
+                <li onClick={()=>handleCatBtn(category)} key={index}    className="text-sm hover:cursor-pointer hover:text-white text-[#929FA5] font-medium leading-5 mb-[6px] ">{category.categoryName}</li>
+            ))}
+            <Link href="/shop">
                 <li  className="text-sm text-[#EBC80C] font-medium leading-5 flex gap-2 items-center  ">Browse All Product <FaArrowRightLong /> </li>
+            </Link>
             </ul>
           </div>
           <div className="w-[200px]">
